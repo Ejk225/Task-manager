@@ -1,0 +1,68 @@
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const { sequelize } = require('./config/database');
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+// Middlewares
+app.use(cors({
+  origin: process.env.FRONTEND_URL,
+  credentials: true
+}));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Route de test
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    status: 'OK', 
+    message: 'Serveur Task Manager opérationnel',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Routes d'authentification
+app.use('/api/auth', require('./routes/authRoutes'));
+
+// Routes des projets
+app.use('/api/projects', require('./routes/projectRoutes'));
+
+// Gestion des erreurs 404
+app.use((req, res) => {
+  res.status(404).json({ error: 'Route non trouvée' });
+});
+
+// Gestion des erreurs globales
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ 
+    error: 'Erreur serveur',
+    message: err.message 
+  });
+});
+
+// Démarrage du serveur avec test de connexion DB
+const startServer = async () => {
+  try {
+    // Test connexion base de données
+    await sequelize.authenticate();
+    console.log('✅ Connexion PostgreSQL réussie');
+    
+    /* Synchronisation des modèles (création tables si nécessaire)
+    await sequelize.sync({ alter: false });
+    console.log('✅ Base de données synchronisée');*/
+    
+    // Démarrage serveur
+    app.listen(PORT, () => {
+      console.log(`🚀 Serveur démarré sur http://localhost:${PORT}`);
+      console.log(`📊 Environnement: ${process.env.NODE_ENV}`);
+    });
+  } catch (error) {
+    console.error('❌ Erreur de démarrage:', error);
+    process.exit(1);
+  }
+};
+
+startServer();
