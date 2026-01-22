@@ -1,4 +1,4 @@
-const { Project, User, Participe, sequelize } = require('../models');
+const { Project, User, sequelize } = require('../models');
 
 // Ajouter un membre au projet
 const addMember = async (req, res) => {
@@ -48,15 +48,16 @@ const addMember = async (req, res) => {
     }
 
     // Vérifier si l'utilisateur est déjà membre
-    const existingMember = await Participe.findOne({
-      where: {
-        id_utilisateur: userToAdd.id_utilisateur,
-        id_projet: projectId
-      },
-      transaction
-    });
+    const existingMember = await sequelize.query(
+      `SELECT * FROM "Participe" WHERE id_utilisateur = ? AND id_projet = ?`,
+      {
+        replacements: [userToAdd.id_utilisateur, projectId],
+        type: sequelize.QueryTypes.SELECT,
+        transaction
+      }
+    );
 
-    if (existingMember) {
+    if (existingMember.length > 0) {
       await transaction.rollback();
       return res.status(409).json({
         success: false,
@@ -65,10 +66,13 @@ const addMember = async (req, res) => {
     }
 
     // Ajouter le membre
-    await Participe.create({
-      id_utilisateur: userToAdd.id_utilisateur,
-      id_projet: projectId
-    }, { transaction });
+    await sequelize.query(
+      `INSERT INTO "Participe" (id_utilisateur, id_projet, date_ajout) VALUES (?, ?, NOW())`,
+      {
+        replacements: [userToAdd.id_utilisateur, projectId],
+        transaction
+      }
+    );
 
     await transaction.commit();
 
@@ -194,15 +198,16 @@ const removeMember = async (req, res) => {
     }
 
     // Vérifier que le membre existe dans le projet
-    const memberExists = await Participe.findOne({
-      where: {
-        id_utilisateur: memberIdToRemove,
-        id_projet: projectId
-      },
-      transaction
-    });
+    const memberExists = await sequelize.query(
+      `SELECT * FROM "Participe" WHERE id_utilisateur = ? AND id_projet = ?`,
+      {
+        replacements: [memberIdToRemove, projectId],
+        type: sequelize.QueryTypes.SELECT,
+        transaction
+      }
+    );
 
-    if (!memberExists) {
+    if (memberExists.length === 0) {
       await transaction.rollback();
       return res.status(404).json({
         success: false,
@@ -211,13 +216,13 @@ const removeMember = async (req, res) => {
     }
 
     // Retirer le membre
-    await Participe.destroy({
-      where: {
-        id_utilisateur: memberIdToRemove,
-        id_projet: projectId
-      },
-      transaction
-    });
+    await sequelize.query(
+      `DELETE FROM "Participe" WHERE id_utilisateur = ? AND id_projet = ?`,
+      {
+        replacements: [memberIdToRemove, projectId],
+        transaction
+      }
+    );
 
     await transaction.commit();
 
@@ -265,15 +270,16 @@ const leaveProject = async (req, res) => {
     }
 
     // Vérifier que l'utilisateur est membre
-    const isMember = await Participe.findOne({
-      where: {
-        id_utilisateur: currentUserId,
-        id_projet: projectId
-      },
-      transaction
-    });
+    const isMember = await sequelize.query(
+      `SELECT * FROM "Participe" WHERE id_utilisateur = ? AND id_projet = ?`,
+      {
+        replacements: [currentUserId, projectId],
+        type: sequelize.QueryTypes.SELECT,
+        transaction
+      }
+    );
 
-    if (!isMember) {
+    if (isMember.length === 0) {
       await transaction.rollback();
       return res.status(404).json({
         success: false,
@@ -282,13 +288,13 @@ const leaveProject = async (req, res) => {
     }
 
     // Quitter le projet
-    await Participe.destroy({
-      where: {
-        id_utilisateur: currentUserId,
-        id_projet: projectId
-      },
-      transaction
-    });
+    await sequelize.query(
+      `DELETE FROM "Participe" WHERE id_utilisateur = ? AND id_projet = ?`,
+      {
+        replacements: [currentUserId, projectId],
+        transaction
+      }
+    );
 
     await transaction.commit();
 
