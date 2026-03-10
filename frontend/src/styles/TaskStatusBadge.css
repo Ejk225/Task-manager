@@ -1,0 +1,95 @@
+.task-badges {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Badges de statut */
+.status-badge {
+  padding: 0.3rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-badge.status-a_faire {
+  background-color: #95a5a6;
+  color: white;
+}
+
+.status-badge.status-en_cours {
+  background-color: #3498db;
+  color: white;
+}
+
+.status-badge.status-terminee {
+  background-color: #2ecc71;
+  color: white;
+}
+
+.status-badge.status-archivee {
+  background-color: #7f8c8d;
+  color: white;
+}
+
+/* Badges de priorité */
+.priority-badge {
+  padding: 0.3rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.priority-badge.priority-basse {
+  background-color: #1abc9c;
+  color: white;
+}
+
+.priority-badge.priority-moyenne {
+  background-color: #f39c12;
+  color: white;
+}
+
+.priority-badge.priority-haute {
+  background-color: #e67e22;
+  color: white;
+}
+
+.priority-badge.priority-urgente {
+  background-color: #e74c3c;
+  color: white;
+}
+
+/* Badge en retard */
+.overdue-badge {
+  padding: 0.3rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background-color: #e74c3c;
+  color: white;
+  white-space: nowrap;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .status-badge,
+  .priority-badge,
+  .overdue-badge {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.6rem;
+  }
+}

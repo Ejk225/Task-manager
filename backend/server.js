@@ -29,6 +29,9 @@ app.use('/api/auth', require('./routes/authRoutes'));
 // Routes des projets
 app.use('/api/projects', require('./routes/projectRoutes'));
 
+// Routes des tâches
+app.use('/api', require('./routes/taskRoutes'));
+
 // Gestion des erreurs 404
 app.use((req, res) => {
   res.status(404).json({ error: 'Route non trouvée' });
@@ -50,9 +53,9 @@ const startServer = async () => {
     await sequelize.authenticate();
     console.log('✅ Connexion PostgreSQL réussie');
     
-    /* Synchronisation des modèles (création tables si nécessaire)
+    // Synchronisation des modèles (création tables si nécessaire)
     await sequelize.sync({ alter: false });
-    console.log('✅ Base de données synchronisée');*/
+    console.log('✅ Base de données synchronisée');
     
     // Démarrage serveur
     app.listen(PORT, () => {

@@ -1,0 +1,367 @@
+.project-detail-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  min-height: calc(100vh - 80px);
+  background-color: #f5f5f5;
+}
+
+.btn-back {
+  background: #f0f0f0;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  transition: background 0.2s, transform 0.1s;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-back:hover {
+  background: #e0e0e0;
+}
+
+.btn-back:active {
+  transform: scale(0.98);
+}
+
+.project-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.project-detail-header > div:first-child {
+  flex: 1;
+  min-width: 250px;
+}
+
+.project-detail-header h1 {
+  margin: 0 0 0.5rem 0;
+  color: #333;
+  font-size: 2.5rem;
+  font-weight: 700;
+  word-break: break-word;
+}
+
+.project-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.project-detail-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 100%;
+}
+
+.project-info-section,
+.members-section {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  width: 100%;
+}
+
+.project-info-section h2,
+.members-section h2 {
+  margin: 0 0 1rem 0;
+  color: #333;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.project-info-section p {
+  color: #666;
+  line-height: 1.6;
+  margin: 0;
+  font-size: 1rem;
+}
+
+.members-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.btn-add-member {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 0.7rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: transform 0.2s;
+  white-space: nowrap;
+  min-height: 44px;
+}
+
+.btn-add-member:hover {
+  transform: translateY(-2px);
+}
+
+.btn-add-member:active {
+  transform: translateY(0);
+}
+
+.add-member-form {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+
+.add-member-form input {
+  flex: 1;
+  min-width: 200px;
+  padding: 0.7rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.add-member-form input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.add-member-form button {
+  min-height: 40px;
+  white-space: nowrap;
+}
+
+.members-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.member-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  transition: background 0.2s;
+  gap: 1rem;
+}
+
+.member-card:hover {
+  background: #f0f0f0;
+}
+
+.member-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.member-info > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.member-info h4 {
+  margin: 0 0 0.25rem 0;
+  color: #333;
+  font-size: 1rem;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.member-info p {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.role-badge {
+  padding: 0.3rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.role-badge.owner {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.btn-remove {
+  background: #fee;
+  color: #c33;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background 0.2s, transform 0.1s;
+  white-space: nowrap;
+  min-height: 40px;
+  flex-shrink: 0;
+}
+
+.btn-remove:hover {
+  background: #fdd;
+}
+
+.btn-remove:active {
+  transform: scale(0.98);
+}
+
+.loading,
+.error-message {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1rem;
+}
+
+/* ============================================ */
+/* TABLETTE (768px - 1024px) */
+/* ============================================ */
+@media (max-width: 1024px) {
+  .project-detail-container {
+    padding: 1.5rem;
+  }
+
+  .project-detail-header h1 {
+    font-size: 2rem;
+  }
+
+  .project-info-section,
+  .members-section {
+    padding: 1.5rem;
+  }
+}
+
+/* ============================================ */
+/* MOBILE (< 768px) */
+/* ============================================ */
+@media (max-width: 768px) {
+  .project-detail-container {
+    padding: 1rem;
+    min-height: calc(100vh - 120px);
+  }
+
+  .btn-back {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .project-detail-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .project-detail-header > div:first-child {
+    width: 100%;
+  }
+
+  .project-detail-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .project-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .project-actions button {
+    width: 100%;
+  }
+
+  .project-info-section,
+  .members-section {
+    padding: 1.25rem;
+  }
+
+  .members-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .btn-add-member {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .add-member-form {
+    flex-direction: column;
+  }
+
+  .add-member-form input {
+    width: 100%;
+    min-width: 100%;
+  }
+
+  .add-member-form button {
+    width: 100%;
+  }
+
+  .member-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .member-info {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .member-info h4,
+  .member-info p {
+    white-space: normal;
+  }
+
+  .btn-remove {
+    width: 100%;
+  }
+}
+
+/* TRÈS PETIT MOBILE (< 480px) */
+@media (max-width: 480px) {
+  .project-detail-container {
+    padding: 0.75rem;
+  }
+
+  .project-detail-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .project-info-section,
+  .members-section {
+    padding: 1rem;
+  }
+}

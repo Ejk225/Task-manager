@@ -1,0 +1,187 @@
+.projects-container {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 2rem;
+  min-height: calc(100vh - 80px);
+  background-color: #f5f5f5;
+}
+
+.projects-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.projects-header h1 {
+  margin: 0;
+  color: #333;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.btn-create-project {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  white-space: nowrap;
+  min-height: 44px;
+}
+
+.btn-create-project:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.btn-create-project:active {
+  transform: translateY(0);
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.empty-state h2 {
+  color: #333;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.empty-state p {
+  color: #666;
+  margin-bottom: 2rem;
+  font-size: 1rem;
+}
+
+.loading {
+  text-align: center;
+  padding: 4rem 2rem;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.error-message {
+  background-color: #fee;
+  color: #c33;
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid #c33;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+/* ============================================ */
+/* DESKTOP LARGE (> 1400px) */
+/* ============================================ */
+@media (min-width: 1400px) {
+  .projects-container {
+    max-width: 1600px;
+  }
+
+  .projects-grid {
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  }
+}
+
+/* ============================================ */
+/* TABLETTE (768px - 1024px) */
+/* ============================================ */
+@media (max-width: 1024px) {
+  .projects-container {
+    padding: 1.5rem;
+  }
+
+  .projects-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .projects-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.25rem;
+  }
+}
+
+/* ============================================ */
+/* MOBILE (< 768px) */
+/* ============================================ */
+@media (max-width: 768px) {
+  .projects-container {
+    padding: 1rem;
+    min-height: calc(100vh - 120px);
+  }
+
+  .projects-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .projects-header h1 {
+    font-size: 1.5rem;
+    width: 100%;
+  }
+
+  .btn-create-project {
+    width: 100%;
+    justify-content: center;
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+  }
+
+  .projects-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .empty-state {
+    padding: 3rem 1.5rem;
+  }
+
+  .empty-state h2 {
+    font-size: 1.25rem;
+  }
+
+  .empty-state p {
+    font-size: 0.95rem;
+  }
+}
+
+/* TRÈS PETIT MOBILE (< 480px) */
+@media (max-width: 480px) {
+  .projects-container {
+    padding: 0.75rem;
+  }
+
+  .projects-header h1 {
+    font-size: 1.3rem;
+  }
+
+  .btn-create-project {
+    font-size: 0.95rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .empty-state {
+    padding: 2rem 1rem;
+  }
+}
