@@ -2,6 +2,7 @@ const User = require('./User');
 const Project = require('./Project');
 const Participe = require('./Participe');
 const Task = require('./Task');
+const Comment = require('./Comment');
 const { sequelize } = require('../config/database');
 
 // Définir les relations
@@ -54,10 +55,33 @@ Task.belongsTo(User, {
   as: 'utilisateur_assigne'
 });
 
+
+// Relations commentaires
+Task.hasMany(Comment, {
+  foreignKey: 'id_tache',
+  as: 'commentaires'
+});
+
+Comment.belongsTo(Task, {
+  foreignKey: 'id_tache',
+  as: 'tache'
+});
+
+User.hasMany(Comment, {
+  foreignKey: 'id_utilisateur',
+  as: 'commentaires'
+});
+
+Comment.belongsTo(User, {
+  foreignKey: 'id_utilisateur',
+  as: 'auteur'
+});
+
 module.exports = {
   sequelize,
   User,
   Project,
   Participe,
-  Task
+  Task,
+  Comment
 };

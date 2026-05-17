@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Navbar from '../../components/Navbar';
 import projectService from '../../services/projectService';
+import taskService from '../../services/taskService';
 import { useAuth } from '../../context/AuthContext';
+import { exportProjectDetailToPDF } from '../../services/pdfExportService';
 import '../../styles/ProjectDetail.css';
 
 const ProjectDetail = () => {
@@ -12,26 +14,27 @@ const ProjectDetail = () => {
 
   const [project, setProject] = useState(null);
   const [members, setMembers] = useState([]);
+  const [tasks, setTasks] = useState([]);       // ← ICI, dans le composant
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showAddMember, setShowAddMember] = useState(false);
   const [memberEmail, setMemberEmail] = useState('');
 
   useEffect(() => {
-    if (id) {
-      loadProjectData(parseInt(id));
-    }
+    if (id) loadProjectData(parseInt(id));
   }, [id]);
 
   const loadProjectData = async (projectId) => {
     try {
       setLoading(true);
-      const [projectResponse, membersResponse] = await Promise.all([
+      const [projectResponse, membersResponse, tasksResponse] = await Promise.all([
         projectService.getProjectById(projectId),
-        projectService.getMembers(projectId)
+        projectService.getMembers(projectId),
+        taskService.getTasksByProject(projectId, {})
       ]);
       setProject(projectResponse.data);
       setMembers(membersResponse.data);
+      setTasks(tasksResponse.data);
     } catch (err) {
       setError(err.message || 'Erreur lors du chargement');
     } finally {
@@ -41,7 +44,6 @@ const ProjectDetail = () => {
 
   const handleAddMember = async () => {
     if (!id || !memberEmail.trim()) return;
-
     try {
       await projectService.addMember(parseInt(id), { email: memberEmail });
       setMemberEmail('');
@@ -54,7 +56,6 @@ const ProjectDetail = () => {
 
   const handleRemoveMember = async (memberId) => {
     if (!id) return;
-    
     if (window.confirm('Êtes-vous sûr de vouloir retirer ce membre ?')) {
       try {
         await projectService.removeMember(parseInt(id), memberId);
@@ -67,7 +68,6 @@ const ProjectDetail = () => {
 
   const handleDelete = async () => {
     if (!id || !project) return;
-    
     if (window.confirm(`Êtes-vous sûr de vouloir supprimer le projet "${project.nom}" ?`)) {
       try {
         await projectService.deleteProject(parseInt(id));
@@ -115,9 +115,9 @@ const ProjectDetail = () => {
             <h1>{project.nom}</h1>
             {isOwner && <span className="owner-badge">Propriétaire</span>}
           </div>
-          
+
           <div className="project-actions">
-            <button 
+            <button
               className="btn-view-tasks"
               onClick={() => navigate(`/projects/${id}/tasks`)}
             >
@@ -125,13 +125,19 @@ const ProjectDetail = () => {
             </button>
             {isOwner && (
               <>
-                <button 
+                <button
                   className="btn-edit"
                   onClick={() => navigate(`/projects/${id}/edit`)}
                 >
                   ✏️ Modifier
                 </button>
-                <button 
+                <button
+                  className="btn-export-pdf"
+                  onClick={() => exportProjectDetailToPDF(project, members, tasks)}
+                >
+                  📥 Télécharger PDF
+                </button>
+                <button
                   className="btn-delete"
                   onClick={handleDelete}
                 >
@@ -152,7 +158,7 @@ const ProjectDetail = () => {
             <div className="members-header">
               <h2>Membres ({members.length})</h2>
               {isOwner && (
-                <button 
+                <button
                   className="btn-add-member"
                   onClick={() => setShowAddMember(!showAddMember)}
                 >
@@ -169,12 +175,8 @@ const ProjectDetail = () => {
                   value={memberEmail}
                   onChange={(e) => setMemberEmail(e.target.value)}
                 />
-                <button onClick={handleAddMember} className="btn-submit">
-                  Ajouter
-                </button>
-                <button onClick={() => setShowAddMember(false)} className="btn-cancel">
-                  Annuler
-                </button>
+                <button onClick={handleAddMember} className="btn-submit">Ajouter</button>
+                <button onClick={() => setShowAddMember(false)} className="btn-cancel">Annuler</button>
               </div>
             )}
 
@@ -188,9 +190,8 @@ const ProjectDetail = () => {
                     </div>
                     {member.is_owner && <span className="role-badge owner">Propriétaire</span>}
                   </div>
-                  
                   {isOwner && !member.is_owner && (
-                    <button 
+                    <button
                       className="btn-remove"
                       onClick={() => handleRemoveMember(member.id_utilisateur)}
                     >

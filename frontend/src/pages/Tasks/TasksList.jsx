@@ -4,6 +4,7 @@ import Navbar from '../../components/Navbar';
 import TaskCard from '../../components/TaskCard';
 import taskService from '../../services/taskService';
 import projectService from '../../services/projectService';
+import { exportTasksToPDF } from '../../services/pdfExportService';
 import '../../styles/TasksList.css';
 
 const TasksList = () => {
@@ -126,6 +127,12 @@ const TasksList = () => {
             onClick={() => navigate(`/projects/${projectId}/tasks/new`)}
           >
             ➕ Nouvelle Tâche
+          </button>
+          <button
+            className="btn-export-pdf"
+            onClick={() => exportTasksToPDF(project?.nom || 'projet', tasks, filters)}
+          >
+            📥 Exporter les tâches
           </button>
         </div>
 

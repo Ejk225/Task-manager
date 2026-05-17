@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar';
 import ProjectCard from '../../components/ProjectCard';
 import projectService from '../../services/projectService';
+import { exportProjectsToPDF } from '../../services/pdfExportService';
 import '../../styles/ProjectsList.css';
 
 const ProjectsList = () => {
@@ -58,6 +59,12 @@ const ProjectsList = () => {
             onClick={() => navigate('/projects/new')}
           >
             ➕ Nouveau Projet
+          </button>
+          <button 
+            className="btn-export-pdf"
+            onClick={() => exportProjectsToPDF(projects)}
+          >
+            📄 Exporter en PDF
           </button>
         </div>
 

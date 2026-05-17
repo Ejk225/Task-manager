@@ -6,6 +6,8 @@ import taskService from '../../services/taskService';
 import projectService from '../../services/projectService';
 import { useAuth } from '../../context/AuthContext';
 import '../../styles/TaskDetail.css';
+import CommentsList from '../../components/Comments/CommentsList';
+import '../../styles/Comments.css';
 
 const TaskDetail = () => {
   const navigate = useNavigate();
@@ -227,6 +229,8 @@ const TaskDetail = () => {
               </select>
             </div>
           </section>
+          {/* Commentaires */}
+          <CommentsList taskId={taskId} />
         </div>
       </div>
     </>

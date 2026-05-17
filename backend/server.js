@@ -32,6 +32,12 @@ app.use('/api/projects', require('./routes/projectRoutes'));
 // Routes des tâches
 app.use('/api', require('./routes/taskRoutes'));
 
+// Routes des commentaires
+app.use('/api', require('./routes/commentRoutes'));
+
+// Routes des statistiques
+app.use('/api/stats', require('./routes/statsRoutes'));
+
 // Gestion des erreurs 404
 app.use((req, res) => {
   res.status(404).json({ error: 'Route non trouvée' });
@@ -67,5 +73,6 @@ const startServer = async () => {
     process.exit(1);
   }
 };
+
 
 startServer();
