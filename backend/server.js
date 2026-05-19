@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const path = require('path'); 
 const { sequelize } = require('./config/database');
 
 const app = express();
@@ -37,6 +38,13 @@ app.use('/api', require('./routes/commentRoutes'));
 
 // Routes des statistiques
 app.use('/api/stats', require('./routes/statsRoutes'));
+
+
+// Servir les fichiers uploadés
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Routes pièces jointes
+app.use('/api', require('./routes/attachmentRoutes'));
 
 // Gestion des erreurs 404
 app.use((req, res) => {

@@ -3,30 +3,26 @@ const Project = require('./Project');
 const Participe = require('./Participe');
 const Task = require('./Task');
 const Comment = require('./Comment');
+const Attachment = require('./Attachment');  // ← manquait
 const { sequelize } = require('../config/database');
 
-// Définir les relations
-
-// Un utilisateur peut créer plusieurs projets
+// Relations projets
 User.hasMany(Project, {
   foreignKey: 'id_utilisateur_createur',
   as: 'projets_crees'
 });
-
-// Un projet appartient à un créateur
 Project.belongsTo(User, {
   foreignKey: 'id_utilisateur_createur',
   as: 'createur'
 });
 
-// Relation many-to-many : Utilisateurs <-> Projets (via table Participe)
+// Many-to-many Utilisateurs <-> Projets
 User.belongsToMany(Project, {
   through: Participe,
   foreignKey: 'id_utilisateur',
   otherKey: 'id_projet',
   as: 'projets'
 });
-
 Project.belongsToMany(User, {
   through: Participe,
   foreignKey: 'id_projet',
@@ -34,48 +30,23 @@ Project.belongsToMany(User, {
   as: 'membres'
 });
 
-// Relations pour les tâches
-Project.hasMany(Task, {
-  foreignKey: 'id_projet',
-  as: 'taches'
-});
-
-Task.belongsTo(Project, {
-  foreignKey: 'id_projet',
-  as: 'projet'
-});
-
-User.hasMany(Task, {
-  foreignKey: 'id_utilisateur_assigne',
-  as: 'taches_assignees'
-});
-
-Task.belongsTo(User, {
-  foreignKey: 'id_utilisateur_assigne',
-  as: 'utilisateur_assigne'
-});
-
+// Relations tâches
+Project.hasMany(Task, { foreignKey: 'id_projet', as: 'taches' });
+Task.belongsTo(Project, { foreignKey: 'id_projet', as: 'projet' });
+User.hasMany(Task, { foreignKey: 'id_utilisateur_assigne', as: 'taches_assignees' });
+Task.belongsTo(User, { foreignKey: 'id_utilisateur_assigne', as: 'utilisateur_assigne' });
 
 // Relations commentaires
-Task.hasMany(Comment, {
-  foreignKey: 'id_tache',
-  as: 'commentaires'
-});
+Task.hasMany(Comment, { foreignKey: 'id_tache', as: 'commentaires' });
+Comment.belongsTo(Task, { foreignKey: 'id_tache', as: 'tache' });
+User.hasMany(Comment, { foreignKey: 'id_utilisateur', as: 'commentaires' });
+Comment.belongsTo(User, { foreignKey: 'id_utilisateur', as: 'auteur' });
 
-Comment.belongsTo(Task, {
-  foreignKey: 'id_tache',
-  as: 'tache'
-});
-
-User.hasMany(Comment, {
-  foreignKey: 'id_utilisateur',
-  as: 'commentaires'
-});
-
-Comment.belongsTo(User, {
-  foreignKey: 'id_utilisateur',
-  as: 'auteur'
-});
+// Relations pièces jointes  ← manquait
+Task.hasMany(Attachment, { foreignKey: 'id_tache', as: 'pieces_jointes' });
+Attachment.belongsTo(Task, { foreignKey: 'id_tache', as: 'tache' });
+User.hasMany(Attachment, { foreignKey: 'id_utilisateur', as: 'pieces_jointes' });
+Attachment.belongsTo(User, { foreignKey: 'id_utilisateur', as: 'uploader' });
 
 module.exports = {
   sequelize,
@@ -83,5 +54,6 @@ module.exports = {
   Project,
   Participe,
   Task,
-  Comment
+  Comment,
+  Attachment  
 };

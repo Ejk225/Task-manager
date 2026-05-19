@@ -5,9 +5,11 @@ import TaskStatusBadge from '../../components/TaskStatusBadge';
 import taskService from '../../services/taskService';
 import projectService from '../../services/projectService';
 import { useAuth } from '../../context/AuthContext';
-import '../../styles/TaskDetail.css';
+import AttachmentsList from '../../components/Attachments/AttachmentsList';
+import '../../styles/Attachments.css';
 import CommentsList from '../../components/Comments/CommentsList';
 import '../../styles/Comments.css';
+import '../../styles/TaskDetail.css';
 
 const TaskDetail = () => {
   const navigate = useNavigate();
@@ -229,8 +231,13 @@ const TaskDetail = () => {
               </select>
             </div>
           </section>
+
+          {/* Pièces jointes */}
+          <AttachmentsList taskId={taskId} />
+
           {/* Commentaires */}
           <CommentsList taskId={taskId} />
+          
         </div>
       </div>
     </>
