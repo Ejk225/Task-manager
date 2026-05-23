@@ -1,5 +1,19 @@
+# Node
 node_modules/
-dist/
+npm-debug.log*
+
+# Environnement
 .env
-backend/uploads/task-1-1779221856388-921666026.pdf
-backend/uploads/task-2-1779222999874-854727672.pdf
+.env.local
+.env.production
+
+# Uploads
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# Build
+frontend/dist/
+
+# OS
+.DS_Store
+Thumbs.db
