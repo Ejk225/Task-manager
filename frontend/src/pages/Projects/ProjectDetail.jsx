@@ -19,6 +19,7 @@ const ProjectDetail = () => {
   const [error, setError] = useState('');
   const [showAddMember, setShowAddMember] = useState(false);
   const [memberEmail, setMemberEmail] = useState('');
+  const [memberRole, setMemberRole] = useState('membre'); // Nouveau state pour le rôle
 
   useEffect(() => {
     if (id) loadProjectData(parseInt(id));
@@ -45,8 +46,12 @@ const ProjectDetail = () => {
   const handleAddMember = async () => {
     if (!id || !memberEmail.trim()) return;
     try {
-      await projectService.addMember(parseInt(id), { email: memberEmail });
+      await projectService.addMember(parseInt(id), { 
+        email: memberEmail,
+        role: memberRole        // ← ajoute ça
+      });
       setMemberEmail('');
+      setMemberRole('membre');  // ← reset
       setShowAddMember(false);
       loadProjectData(parseInt(id));
     } catch (err) {
@@ -175,6 +180,14 @@ const ProjectDetail = () => {
                   value={memberEmail}
                   onChange={(e) => setMemberEmail(e.target.value)}
                 />
+                <select
+                  value={memberRole}
+                  onChange={(e) => setMemberRole(e.target.value)}
+                  className="assign-select"
+                >
+                  <option value="membre">Membre</option>
+                  <option value="invite">Invité (lecture seule)</option>
+                </select>
                 <button onClick={handleAddMember} className="btn-submit">Ajouter</button>
                 <button onClick={() => setShowAddMember(false)} className="btn-cancel">Annuler</button>
               </div>

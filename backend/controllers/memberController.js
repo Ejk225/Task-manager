@@ -66,10 +66,14 @@ const addMember = async (req, res) => {
     }
 
     // Ajouter le membre
+    const role = req.body.role || 'membre';
+    const validRoles = ['membre', 'invite'];
+    const roleToInsert = validRoles.includes(role) ? role : 'membre';
+
     await sequelize.query(
-      `INSERT INTO "Participe" (id_utilisateur, id_projet, date_ajout) VALUES (?, ?, NOW())`,
+      `INSERT INTO "Participe" (id_utilisateur, id_projet, role, date_ajout) VALUES (?, ?, ?, NOW())`,
       {
-        replacements: [userToAdd.id_utilisateur, projectId],
+        replacements: [userToAdd.id_utilisateur, projectId, roleToInsert],
         transaction
       }
     );
@@ -83,7 +87,7 @@ const addMember = async (req, res) => {
         id_utilisateur: userToAdd.id_utilisateur,
         nom: userToAdd.nom,
         email: userToAdd.email,
-        role: userToAdd.role
+        role: roleToInsert
       }
     });
 
@@ -115,17 +119,18 @@ const getMembers = async (req, res) => {
 
     // Récupérer tous les membres avec leurs infos
     const members = await sequelize.query(
-      `SELECT u.id_utilisateur, u.nom, u.email, u.role, p.date_ajout,
-       CASE WHEN u.id_utilisateur = ? THEN true ELSE false END as is_owner
-       FROM "Participe" p
-       JOIN "Utilisateur" u ON p.id_utilisateur = u.id_utilisateur
-       WHERE p.id_projet = ?
-       ORDER BY p.date_ajout ASC`,
+      `SELECT u.id_utilisateur, u.nom, u.email, p.role as role_projet, p.date_ajout,
+      CASE WHEN u.id_utilisateur = ? THEN true ELSE false END as is_owner
+      FROM "Participe" p
+      JOIN "Utilisateur" u ON p.id_utilisateur = u.id_utilisateur
+      WHERE p.id_projet = ?
+      ORDER BY p.date_ajout ASC`,
       {
         replacements: [project.id_utilisateur_createur, projectId],
         type: sequelize.QueryTypes.SELECT
       }
     );
+    
 
     // Ajouter le créateur s'il n'est pas déjà dans la liste
     const creatorInList = members.some(m => m.id_utilisateur === project.id_utilisateur_createur);

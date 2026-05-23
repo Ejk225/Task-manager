@@ -11,19 +11,19 @@ const {
 } = require('../controllers/taskController');
 const { authenticate } = require('../middlewares/authMiddleware');
 const { checkProjectMembership, checkTaskPermission } = require('../middlewares/taskMiddleware');
+const { blockGuests } = require('../middlewares/guestMiddleware');
 
-// Toutes les routes nécessitent l'authentification
 router.use(authenticate);
 
-// Routes pour les tâches d'un projet
-router.post('/projects/:projectId/tasks', checkProjectMembership, createTask);
+// Lecture — accessible aux invités
 router.get('/projects/:projectId/tasks', checkProjectMembership, getTasksByProject);
-
-// Routes pour une tâche spécifique
 router.get('/tasks/:id', checkTaskPermission, getTaskById);
-router.put('/tasks/:id', checkTaskPermission, updateTask);
-router.delete('/tasks/:id', checkTaskPermission, deleteTask);
-router.put('/tasks/:id/assign', checkTaskPermission, assignTask);
-router.put('/tasks/:id/status', checkTaskPermission, updateTaskStatus);
+
+// Écriture — bloqué pour les invités
+router.post('/projects/:projectId/tasks', checkProjectMembership, blockGuests, createTask);
+router.put('/tasks/:id', checkTaskPermission, blockGuests, updateTask);
+router.delete('/tasks/:id', checkTaskPermission, blockGuests, deleteTask);
+router.put('/tasks/:id/assign', checkTaskPermission, blockGuests, assignTask);
+router.put('/tasks/:id/status', checkTaskPermission, blockGuests, updateTaskStatus);
 
 module.exports = router;

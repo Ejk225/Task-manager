@@ -46,6 +46,9 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Routes pièces jointes
 app.use('/api', require('./routes/attachmentRoutes'));
 
+// Routes historique
+app.use('/api', require('./routes/historyRoutes'));
+
 // Gestion des erreurs 404
 app.use((req, res) => {
   res.status(404).json({ error: 'Route non trouvée' });

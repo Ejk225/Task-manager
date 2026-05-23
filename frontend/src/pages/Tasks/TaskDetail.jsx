@@ -6,15 +6,19 @@ import taskService from '../../services/taskService';
 import projectService from '../../services/projectService';
 import { useAuth } from '../../context/AuthContext';
 import AttachmentsList from '../../components/Attachments/AttachmentsList';
-import '../../styles/Attachments.css';
 import CommentsList from '../../components/Comments/CommentsList';
-import '../../styles/Comments.css';
+import TaskHistoryComponent from '../../components/History/TaskHistory';
+import useProjectRole from '../../hooks/useProjectRole';
 import '../../styles/TaskDetail.css';
+import '../../styles/Attachments.css';
+import '../../styles/Comments.css';
+import '../../styles/TaskHistory.css';
 
 const TaskDetail = () => {
   const navigate = useNavigate();
   const { projectId, taskId } = useParams();
   const { user } = useAuth();
+  const { isGuest, isOwner } = useProjectRole(projectId); // ← une seule fois
 
   const [task, setTask] = useState(null);
   const [members, setMembers] = useState([]);
@@ -43,7 +47,6 @@ const TaskDetail = () => {
 
   const handleDelete = async () => {
     if (!task) return;
-    
     if (window.confirm(`Êtes-vous sûr de vouloir supprimer la tâche "${task.titre}" ?`)) {
       try {
         await taskService.deleteTask(taskId);
@@ -74,22 +77,15 @@ const TaskDetail = () => {
 
   const formatDate = (dateString) => {
     if (!dateString) return 'Pas d\'échéance';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('fr-FR', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
+    return new Date(dateString).toLocaleDateString('fr-FR', {
+      day: 'numeric', month: 'long', year: 'numeric'
     });
   };
 
   const formatDateTime = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('fr-FR', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return new Date(dateString).toLocaleDateString('fr-FR', {
+      day: 'numeric', month: 'long', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
     });
   };
 
@@ -119,8 +115,8 @@ const TaskDetail = () => {
     <>
       <Navbar />
       <div className="task-detail-container">
-        <button 
-          className="btn-back" 
+        <button
+          className="btn-back"
           onClick={() => navigate(`/projects/${projectId}/tasks`)}
         >
           ← Retour aux tâches
@@ -129,31 +125,32 @@ const TaskDetail = () => {
         <div className="task-detail-header">
           <div>
             <h1>{task.titre}</h1>
-            <TaskStatusBadge 
-              statut={task.statut} 
+            <TaskStatusBadge
+              statut={task.statut}
               priorite={task.priorite}
               isOverdue={task.is_overdue}
             />
           </div>
 
           <div className="task-actions-detail">
-            <button
-              className="btn-edit"
-              onClick={() => navigate(`/projects/${projectId}/tasks/${taskId}/edit`)}
-            >
-              ✏️ Modifier
-            </button>
-            <button
-              className="btn-delete"
-              onClick={handleDelete}
-            >
-              🗑️ Supprimer
-            </button>
+            {!isGuest && (
+              <button
+                className="btn-edit"
+                onClick={() => navigate(`/projects/${projectId}/tasks/${taskId}/edit`)}
+              >
+                ✏️ Modifier
+              </button>
+            )}
+            {!isGuest && (
+              <button className="btn-delete" onClick={handleDelete}>
+                🗑️ Supprimer
+              </button>
+            )}
           </div>
         </div>
 
         <div className="task-detail-content">
-          {/* Informations principales */}
+          {/* Description */}
           <section className="task-info-section">
             <h2>Description</h2>
             <p>{task.description || 'Aucune description'}</p>
@@ -184,60 +181,64 @@ const TaskDetail = () => {
             </div>
           </section>
 
-          {/* Actions rapides */}
-          <section className="quick-actions-section">
-            <h2>Actions rapides</h2>
-            
-            <div className="action-group">
-              <h3>Changer le statut</h3>
-              <div className="status-buttons">
-                <button
-                  className={`btn-status ${task.statut === 'a_faire' ? 'active' : ''}`}
-                  onClick={() => handleStatusChange('a_faire')}
-                  disabled={task.statut === 'a_faire'}
-                >
-                  À faire
-                </button>
-                <button
-                  className={`btn-status ${task.statut === 'en_cours' ? 'active' : ''}`}
-                  onClick={() => handleStatusChange('en_cours')}
-                  disabled={task.statut === 'en_cours'}
-                >
-                  En cours
-                </button>
-                <button
-                  className={`btn-status ${task.statut === 'terminee' ? 'active' : ''}`}
-                  onClick={() => handleStatusChange('terminee')}
-                  disabled={task.statut === 'terminee'}
-                >
-                  Terminé
-                </button>
-              </div>
-            </div>
+          {/* Actions rapides — masquées pour les invités */}
+          {!isGuest && (
+            <section className="quick-actions-section">
+              <h2>Actions rapides</h2>
 
-            <div className="action-group">
-              <h3>Réassigner</h3>
-              <select
-                className="assign-select"
-                value={task.id_utilisateur_assigne || ''}
-                onChange={(e) => handleAssign(e.target.value || null)}
-              >
-                <option value="">Non assigné</option>
-                {members.map(member => (
-                  <option key={member.id_utilisateur} value={member.id_utilisateur}>
-                    {member.nom}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </section>
+              <div className="action-group">
+                <h3>Changer le statut</h3>
+                <div className="status-buttons">
+                  <button
+                    className={`btn-status ${task.statut === 'a_faire' ? 'active' : ''}`}
+                    onClick={() => handleStatusChange('a_faire')}
+                    disabled={task.statut === 'a_faire'}
+                  >
+                    À faire
+                  </button>
+                  <button
+                    className={`btn-status ${task.statut === 'en_cours' ? 'active' : ''}`}
+                    onClick={() => handleStatusChange('en_cours')}
+                    disabled={task.statut === 'en_cours'}
+                  >
+                    En cours
+                  </button>
+                  <button
+                    className={`btn-status ${task.statut === 'terminee' ? 'active' : ''}`}
+                    onClick={() => handleStatusChange('terminee')}
+                    disabled={task.statut === 'terminee'}
+                  >
+                    Terminé
+                  </button>
+                </div>
+              </div>
+
+              <div className="action-group">
+                <h3>Réassigner</h3>
+                <select
+                  className="assign-select"
+                  value={task.id_utilisateur_assigne || ''}
+                  onChange={(e) => handleAssign(e.target.value || null)}
+                >
+                  <option value="">Non assigné</option>
+                  {members.map(member => (
+                    <option key={member.id_utilisateur} value={member.id_utilisateur}>
+                      {member.nom}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </section>
+          )}
 
           {/* Pièces jointes */}
           <AttachmentsList taskId={taskId} />
 
+          {/* Historique */}
+          <TaskHistoryComponent taskId={taskId} />
+
           {/* Commentaires */}
           <CommentsList taskId={taskId} />
-          
         </div>
       </div>
     </>

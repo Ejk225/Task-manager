@@ -1,4 +1,5 @@
 const { Task, User, Project } = require('../models');
+const { TaskHistory } = require('../models');
 
 // Créer une nouvelle tâche
 const createTask = async (req, res) => {
@@ -165,10 +166,10 @@ const getTaskById = async (req, res) => {
 // Modifier une tâche
 const updateTask = async (req, res) => {
   try {
-    const task = req.task; // Injecté par le middleware
+    const task = req.task;
+    const userId = req.user.id;
     const { titre, description, statut, priorite, date_echeance, id_utilisateur_assigne } = req.body;
 
-    // Validation
     if (titre !== undefined && !titre.trim()) {
       return res.status(400).json({
         success: false,
@@ -176,25 +177,56 @@ const updateTask = async (req, res) => {
       });
     }
 
-    // Mise à jour
-    await task.update({
+    // Champs à surveiller pour l'historique
+    const champsASurveiller = [
+      { champ: 'titre', label: 'titre' },
+      { champ: 'statut', label: 'statut' },
+      { champ: 'priorite', label: 'priorité' },
+      { champ: 'description', label: 'description' },
+      { champ: 'date_echeance', label: 'échéance' },
+      { champ: 'id_utilisateur_assigne', label: 'assignation' }
+    ];
+
+    const newValues = {
       titre: titre !== undefined ? titre : task.titre,
       description: description !== undefined ? description : task.description,
       statut: statut !== undefined ? statut : task.statut,
       priorite: priorite !== undefined ? priorite : task.priorite,
       date_echeance: date_echeance !== undefined ? date_echeance : task.date_echeance,
       id_utilisateur_assigne: id_utilisateur_assigne !== undefined ? id_utilisateur_assigne : task.id_utilisateur_assigne
-    });
+    };
+
+    // Enregistrer les modifications dans l'historique
+    const historiqueEntries = [];
+    for (const { champ, label } of champsASurveiller) {
+      const ancienne = task[champ] !== undefined ? String(task[champ] ?? '') : '';
+      const nouvelle = newValues[champ] !== undefined ? String(newValues[champ] ?? '') : '';
+      if (ancienne !== nouvelle) {
+        historiqueEntries.push({
+          champ_modifie: label,
+          ancienne_valeur: ancienne || null,
+          nouvelle_valeur: nouvelle || null,
+          id_tache: task.id_tache,
+          id_utilisateur: userId
+        });
+      }
+    }
+
+    // Mettre à jour la tâche
+    await task.update(newValues);
+
+    // Sauvegarder l'historique
+    if (historiqueEntries.length > 0) {
+      await TaskHistory.bulkCreate(historiqueEntries);
+    }
 
     // Recharger avec relations
     const updatedTask = await Task.findByPk(task.id_tache, {
-      include: [
-        {
-          model: User,
-          as: 'utilisateur_assigne',
-          attributes: ['id_utilisateur', 'nom', 'email']
-        }
-      ]
+      include: [{
+        model: User,
+        as: 'utilisateur_assigne',
+        attributes: ['id_utilisateur', 'nom', 'email']
+      }]
     });
 
     res.status(200).json({
@@ -239,22 +271,48 @@ const deleteTask = async (req, res) => {
 const assignTask = async (req, res) => {
   try {
     const task = req.task;
+    const userId = req.user.id;
     const { id_utilisateur_assigne } = req.body;
 
-    // Si null, on désassigne
+    // Récupérer les noms pour l'historique
+    let ancienNom = null;
+    let nouveauNom = null;
+
+    if (task.id_utilisateur_assigne) {
+      const ancienUser = await User.findByPk(task.id_utilisateur_assigne, {
+        attributes: ['nom']
+      });
+      ancienNom = ancienUser?.nom || String(task.id_utilisateur_assigne);
+    }
+
+    if (id_utilisateur_assigne) {
+      const nouveauUser = await User.findByPk(id_utilisateur_assigne, {
+        attributes: ['nom']
+      });
+      nouveauNom = nouveauUser?.nom || String(id_utilisateur_assigne);
+    }
+
+    // Enregistrer dans l'historique avec les noms
+    if (ancienNom !== nouveauNom) {
+      await TaskHistory.create({
+        champ_modifie: 'assignation',
+        ancienne_valeur: ancienNom,
+        nouvelle_valeur: nouveauNom,
+        id_tache: task.id_tache,
+        id_utilisateur: userId
+      });
+    }
+
     await task.update({
       id_utilisateur_assigne: id_utilisateur_assigne || null
     });
 
-    // Recharger avec relations
     const updatedTask = await Task.findByPk(task.id_tache, {
-      include: [
-        {
-          model: User,
-          as: 'utilisateur_assigne',
-          attributes: ['id_utilisateur', 'nom', 'email']
-        }
-      ]
+      include: [{
+        model: User,
+        as: 'utilisateur_assigne',
+        attributes: ['id_utilisateur', 'nom', 'email']
+      }]
     });
 
     res.status(200).json({
@@ -277,9 +335,9 @@ const assignTask = async (req, res) => {
 const updateTaskStatus = async (req, res) => {
   try {
     const task = req.task;
+    const userId = req.user.id;
     const { statut } = req.body;
 
-    // Validation
     const validStatuts = ['a_faire', 'en_cours', 'terminee', 'archivee'];
     if (!validStatuts.includes(statut)) {
       return res.status(400).json({
@@ -288,17 +346,25 @@ const updateTaskStatus = async (req, res) => {
       });
     }
 
+    // Enregistrer dans l'historique avant de modifier
+    if (task.statut !== statut) {
+      await TaskHistory.create({
+        champ_modifie: 'statut',
+        ancienne_valeur: task.statut,
+        nouvelle_valeur: statut,
+        id_tache: task.id_tache,
+        id_utilisateur: userId
+      });
+    }
+
     await task.update({ statut });
 
-    // Recharger avec relations
     const updatedTask = await Task.findByPk(task.id_tache, {
-      include: [
-        {
-          model: User,
-          as: 'utilisateur_assigne',
-          attributes: ['id_utilisateur', 'nom', 'email']
-        }
-      ]
+      include: [{
+        model: User,
+        as: 'utilisateur_assigne',
+        attributes: ['id_utilisateur', 'nom', 'email']
+      }]
     });
 
     res.status(200).json({

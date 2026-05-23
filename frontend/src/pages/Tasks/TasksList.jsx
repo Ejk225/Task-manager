@@ -6,10 +6,12 @@ import taskService from '../../services/taskService';
 import projectService from '../../services/projectService';
 import { exportTasksToPDF } from '../../services/pdfExportService';
 import '../../styles/TasksList.css';
+import useProjectRole from '../../hooks/useProjectRole';
 
 const TasksList = () => {
   const navigate = useNavigate();
   const { projectId } = useParams();
+  const { isGuest, isOwner } = useProjectRole(projectId);
 
   const [tasks, setTasks] = useState([]);
   const [project, setProject] = useState(null);
@@ -122,12 +124,14 @@ const TasksList = () => {
               )}
             </div>
           </div>
-          <button
-            className="btn-create-task"
-            onClick={() => navigate(`/projects/${projectId}/tasks/new`)}
-          >
-            ➕ Nouvelle Tâche
-          </button>
+          {!isGuest && (
+            <button
+              className="btn-create-task"
+              onClick={() => navigate(`/projects/${projectId}/tasks/new`)}
+            >
+              ➕ Nouvelle Tâche
+            </button>
+          )}
           <button
             className="btn-export-pdf"
             onClick={() => exportTasksToPDF(project?.nom || 'projet', tasks, filters)}

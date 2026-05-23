@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { authenticate } = require('../middlewares/authMiddleware');
+const { blockGuests } = require('../middlewares/guestMiddleware');
 const {
   addComment,
   getCommentsByTask,
@@ -8,12 +9,12 @@ const {
   deleteComment
 } = require('../controllers/commentController');
 
-// Routes commentaires sur une tâche
-router.post('/tasks/:taskId/comments', authenticate, addComment);
+// Lecture — accessible aux invités
 router.get('/tasks/:taskId/comments', authenticate, getCommentsByTask);
 
-// Routes sur un commentaire spécifique
-router.put('/comments/:id', authenticate, updateComment);
-router.delete('/comments/:id', authenticate, deleteComment);
+// Écriture — bloqué pour les invités
+router.post('/tasks/:taskId/comments', authenticate, addComment);
+router.put('/comments/:id', authenticate, blockGuests, updateComment);
+router.delete('/comments/:id', authenticate, blockGuests, deleteComment);
 
 module.exports = router;
