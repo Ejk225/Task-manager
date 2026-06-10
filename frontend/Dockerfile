@@ -7,12 +7,11 @@ RUN npm install
 
 COPY . .
 
-# Force rebuild
 ARG CACHEBUST=1
 RUN npm run build
 
 FROM nginx:alpine
 COPY --from=builder /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/templates/default.conf.template
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["/bin/sh", "-c", "export PORT=${PORT:-80} && nginx -g 'daemon off;'"]
