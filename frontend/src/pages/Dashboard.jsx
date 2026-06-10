@@ -1,53 +1,58 @@
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import Navbar from '../components/Navbar';
 import '../styles/Dashboard.css';
 
 const Dashboard = () => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
+  const today = new Date().toLocaleDateString('fr-FR', {
+    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+  });
 
   return (
-    <div className="dashboard-container">
-      <header className="dashboard-header">
-        <h1>Task Manager</h1>
-        <div className="user-info">
-          <span>Bonjour, {user?.nom}</span>
-          <button onClick={handleLogout} className="btn-logout">
-            Déconnexion
-          </button>
-        </div>
-      </header>
-
-      <main className="dashboard-main">
+    <>
+      <Navbar />
+      <div className="dashboard-main">
         <div className="welcome-card">
-          <h2>Bienvenue sur votre Dashboard ! 🎉</h2>
-          <p>Authentification réussie ✅</p>
-          
+
+          <div className="welcome-header">
+            <div>
+              <h2>Bienvenue, {user?.nom} ! 👋</h2>
+              <p className="welcome-date">{today}</p>
+            </div>
+          </div>
+
+          <p className="welcome-citation">
+            « Un projet bien organisé, c'est la moitié du travail accompli. »
+          </p>
+
+          <div className="welcome-actions">
+            <button
+              className="btn-go-projects"
+              onClick={() => navigate('/projects')}
+            >
+              📁 Accéder à mes projets
+            </button>
+            <button
+              className="btn-new-project"
+              onClick={() => navigate('/projects/new')}
+            >
+              ➕ Créer un projet
+            </button>
+          </div>
+
           <div className="user-details">
             <h3>Vos informations :</h3>
             <p><strong>Nom :</strong> {user?.nom}</p>
             <p><strong>Email :</strong> {user?.email}</p>
             <p><strong>Rôle :</strong> {user?.role}</p>
-            <p><strong>ID :</strong> {user?.id_utilisateur}</p>
           </div>
 
-          <div className="next-steps">
-            <h3>Prochaines étapes :</h3>
-            <ul>
-              <li>✅ Authentification fonctionnelle</li>
-              <li>⏳ Gestion des projets (Sprint 2)</li>
-              <li>⏳ Gestion des tâches (Sprint 3)</li>
-              <li>⏳ Notifications temps réel (Sprint 4)</li>
-            </ul>
-          </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </>
   );
 };
 
