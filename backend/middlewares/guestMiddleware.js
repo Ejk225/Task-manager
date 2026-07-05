@@ -4,7 +4,6 @@ const blockGuests = async (req, res, next) => {
   try {
     const userId = req.user.id;
 
-    // Réutilise le contexte déjà injecté par checkTaskPermission / checkProjectMembership
     let projectId = null;
     if (req.task) {
       projectId = req.task.id_projet;
@@ -14,6 +13,15 @@ const blockGuests = async (req, res, next) => {
       projectId = req.params.projectId || req.body.id_projet;
     }
 
+    // --- LOG TEMPORAIRE DE DIAGNOSTIC ---
+    console.log('[DEBUG blockGuests]', {
+      userId,
+      projectId,
+      hasReqTask: !!req.task,
+      reqTaskIdProjet: req.task?.id_projet,
+      route: req.originalUrl
+    });
+
     if (!projectId) return next();
 
     const participation = await Participe.findOne({
@@ -22,6 +30,9 @@ const blockGuests = async (req, res, next) => {
         id_projet: projectId
       }
     });
+
+    console.log('[DEBUG blockGuests] participation trouvée:', participation ? participation.toJSON() : null);
+    // --- FIN LOG TEMPORAIRE ---
 
     if (!participation) {
       return res.status(403).json({
