@@ -1,12 +1,18 @@
 const { Participe } = require('../models');
 
-// Middleware qui bloque les invités pour les actions d'écriture
 const blockGuests = async (req, res, next) => {
   try {
     const userId = req.user.id;
 
-    // Récupérer le projectId selon la route
-    const projectId = req.params.projectId || req.params.id || req.body.id_projet;
+    // Réutilise le contexte déjà injecté par checkTaskPermission / checkProjectMembership
+    let projectId = null;
+    if (req.task) {
+      projectId = req.task.id_projet;
+    } else if (req.project) {
+      projectId = req.project.id_projet;
+    } else {
+      projectId = req.params.projectId || req.body.id_projet;
+    }
 
     if (!projectId) return next();
 

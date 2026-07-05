@@ -45,6 +45,7 @@ services:
     networks:
       - task_network
 
+  
   # Frontend React
   frontend:
     build:
@@ -52,6 +53,8 @@ services:
       dockerfile: Dockerfile
     container_name: task_manager_frontend
     restart: unless-stopped
+    environment:
+      - VITE_API_URL=http://localhost:5000/api  # <--- AJOUTE CETTE LIGNE ICI
     ports:
       - "80:80"
     depends_on:

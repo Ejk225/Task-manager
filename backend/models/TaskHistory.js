@@ -19,6 +19,12 @@ const TaskHistory = sequelize.define('HistoriqueTache', {
     type: DataTypes.TEXT,
     allowNull: true
   },
+  // --- Nouvelle colonne : document JSON à structure variable ---
+  details: {
+    type: DataTypes.JSONB,
+    allowNull: true,
+    comment: 'Document JSON pour les événements complexes (pièce jointe, réassignation) ne rentrant pas dans le format champ/ancienne_valeur/nouvelle_valeur'
+  },
   date_modification: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW

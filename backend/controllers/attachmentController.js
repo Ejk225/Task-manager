@@ -1,6 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const { Attachment, User, Task, Participe } = require('../models');
+const { logComplexEvent } = require('../utils/historyLogger');
 
 // POST /api/tasks/:id/attachments
 const uploadAttachment = async (req, res) => {
@@ -39,6 +40,21 @@ const uploadAttachment = async (req, res) => {
         attributes: ['id_utilisateur', 'nom', 'email']
       }]
     });
+
+    // --- Historique JSONB : une entrée par fichier uploadé ---
+    // Placé AVANT la réponse HTTP, pour rester dans le try/catch
+    await Promise.all(
+      req.files.map(file =>
+        logComplexEvent(taskId, userId, 'piece_jointe', {
+          action: 'ajout',
+          fichier: {
+            nom: file.originalname,
+            taille: file.size,
+            type_mime: file.mimetype
+          }
+        })
+      )
+    );
 
     res.status(201).json({
       success: true,

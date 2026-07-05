@@ -14,12 +14,12 @@ const ProjectDetail = () => {
 
   const [project, setProject] = useState(null);
   const [members, setMembers] = useState([]);
-  const [tasks, setTasks] = useState([]);       // ← ICI, dans le composant
+  const [tasks, setTasks] = useState([]);       
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showAddMember, setShowAddMember] = useState(false);
   const [memberEmail, setMemberEmail] = useState('');
-  const [memberRole, setMemberRole] = useState('membre'); // Nouveau state pour le rôle
+  const [memberRole, setMemberRole] = useState('membre'); 
 
   useEffect(() => {
     if (id) loadProjectData(parseInt(id));
@@ -48,7 +48,7 @@ const ProjectDetail = () => {
     try {
       await projectService.addMember(parseInt(id), { 
         email: memberEmail,
-        role: memberRole        // ← ajoute ça
+        role: memberRole       
       });
       setMemberEmail('');
       setMemberRole('membre');  // ← reset

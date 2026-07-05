@@ -8,10 +8,26 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middlewares
+// --- Liste des origines autorisées ---
+const allowedOrigins = [
+  process.env.FRONTEND_URL,       // Frontend déployé (Railway)
+  'http://localhost:5173',        // Frontend en développement local (Vite)
+  'http://localhost:3000'         // Au cas où tu testes aussi ce port
+].filter(Boolean); // enlève les valeurs undefined/vides
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL,
+  origin: function (origin, callback) {
+    // Autorise aussi les requêtes sans origine (ex: Postman, curl)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.warn(`⚠️  Origine CORS refusée : ${origin}`);
+      callback(new Error('Non autorisé par la politique CORS'));
+    }
+  },
   credentials: true
 }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

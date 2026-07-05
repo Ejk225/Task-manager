@@ -52,6 +52,47 @@ const getInitials = (nom) => {
   return nom.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
 };
 
+// --- Nouveau : rendu spécifique pour les événements complexes (colonne JSONB) ---
+const renderChange = (entry) => {
+  if (entry.details) {
+    if (entry.details.type === 'piece_jointe') {
+      return (
+        <span className="history-item__change">
+          📎 Pièce jointe ajoutée : <strong>{entry.details.fichier?.nom}</strong>
+          <span className="history-item__meta">
+            {' '}({Math.round((entry.details.fichier?.taille || 0) / 1024)} Ko)
+          </span>
+        </span>
+      );
+    }
+    if (entry.details.type === 'reassignation') {
+      return (
+        <span className="history-item__change">
+          🔄 Réassigné de <strong>{entry.details.ancien_assigne?.nom || '—'}</strong>
+          {' '}à <strong>{entry.details.nouveau_assigne?.nom || '—'}</strong>
+        </span>
+      );
+    }
+  }
+
+  // Fallback : comportement inchangé pour les changements simples existants
+  return (
+    <span className="history-item__change">
+      <span className="history-item__field">
+        {champsLabels[entry.champ_modifie] || entry.champ_modifie}
+      </span>
+      <span className="history-item__arrow"> : </span>
+      <span className="history-item__old">
+        {formatValue(entry.champ_modifie, entry.ancienne_valeur)}
+      </span>
+      <span className="history-item__arrow"> → </span>
+      <span className="history-item__new">
+        {formatValue(entry.champ_modifie, entry.nouvelle_valeur)}
+      </span>
+    </span>
+  );
+};
+
 const TaskHistoryComponent = ({ taskId }) => {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -102,19 +143,7 @@ const TaskHistoryComponent = ({ taskId }) => {
                     {timeAgo(entry.date_modification)}
                   </span>
                 </div>
-                <div className="history-item__change">
-                  <span className="history-item__field">
-                    {champsLabels[entry.champ_modifie] || entry.champ_modifie}
-                  </span>
-                  <span className="history-item__arrow"> : </span>
-                  <span className="history-item__old">
-                    {formatValue(entry.champ_modifie, entry.ancienne_valeur)}
-                  </span>
-                  <span className="history-item__arrow"> → </span>
-                  <span className="history-item__new">
-                    {formatValue(entry.champ_modifie, entry.nouvelle_valeur)}
-                  </span>
-                </div>
+                {renderChange(entry)}
               </div>
             </div>
           ))}
