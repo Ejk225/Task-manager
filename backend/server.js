@@ -7,6 +7,8 @@ const { sequelize } = require('./config/database');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+console.log('🔥🔥🔥 MARQUEUR DE VERSION — TEST 20h30 🔥🔥🔥');
+
 // Middlewares
 // --- Liste des origines autorisées ---
 const allowedOrigins = [
