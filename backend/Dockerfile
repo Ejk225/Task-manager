@@ -6,6 +6,9 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install --production
 
+# --- Casse-cache : force Docker à toujours recopier le code source ---
+ARG CACHEBUST=1
+
 # Copier le code source
 COPY . .
 
