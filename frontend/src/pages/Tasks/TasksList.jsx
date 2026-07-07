@@ -15,8 +15,9 @@ const TasksList = () => {
 
   const [tasks, setTasks] = useState([]);
   const [project, setProject] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState('');
+  const [searchInput, setSearchInput] = useState('');
 
   // Filtres
   const [filters, setFilters] = useState({
@@ -26,13 +27,21 @@ const TasksList = () => {
     search: ''
   });
 
+  // Debounce : synchronise searchInput vers filters.search après 400ms d'inactivité
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setFilters(prev => ({ ...prev, search: searchInput }));
+    }, 400);
+    return () => clearTimeout(timeout);
+  }, [searchInput]);
+
+  // Charge les données au montage et à chaque changement de filtre
   useEffect(() => {
     loadData();
   }, [projectId, filters]);
 
   const loadData = async () => {
     try {
-      setLoading(true);
       const [tasksResponse, projectResponse] = await Promise.all([
         taskService.getTasksByProject(projectId, filters),
         projectService.getProjectById(projectId)
@@ -42,7 +51,7 @@ const TasksList = () => {
     } catch (err) {
       setError(err.message || 'Erreur lors du chargement');
     } finally {
-      setLoading(false);
+      setInitialLoading(false); // seulement au premier chargement
     }
   };
 
@@ -72,6 +81,7 @@ const TasksList = () => {
   };
 
   const clearFilters = () => {
+    setSearchInput('');
     setFilters({
       statut: '',
       priorite: '',
@@ -89,7 +99,7 @@ const TasksList = () => {
     en_retard: tasks.filter(t => t.is_overdue).length
   };
 
-  if (loading) {
+  if (initialLoading) {
     return (
       <>
         <Navbar />
@@ -189,8 +199,8 @@ const TasksList = () => {
             <input
               type="text"
               placeholder="Rechercher..."
-              value={filters.search}
-              onChange={(e) => handleFilterChange('search', e.target.value)}
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
             />
           </div>
 
