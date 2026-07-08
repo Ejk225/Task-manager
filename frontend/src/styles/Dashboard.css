@@ -1,7 +1,10 @@
-.dashboard-main {
+.welcome-card {
   max-width: 700px;
-  margin: 3rem auto;
-  padding: 0 1.5rem;
+  margin: 0 auto 2rem;   /* nouvelle ligne */
+  background: white;
+  border-radius: 16px;
+  padding: 2.5rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 }
 
 .welcome-card {
@@ -96,4 +99,230 @@
   margin: 0.4rem 0;
   font-size: 0.95rem;
   color: #444;
+}
+
+/* ===== Ajouts : section statistiques du Dashboard (disposition bento) ===== */
+
+.stats-loading,
+.stats-error {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+/* Grille asymétrique principale */
+.stats-bento {
+  max-width: 1100px;
+  margin: 2rem auto 0;
+  padding: 0 1rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1.2fr) minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "kpis donut priority recent"
+    "kpis workload workload recent";
+  gap: 1.1rem;
+  align-items: stretch;
+}
+
+.bento-kpis {
+  grid-area: kpis;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.bento-card {
+  background: white;
+  border-radius: 14px;
+  padding: 1.1rem 1.25rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  /* Fix crucial : empêche la grille de réduire la cellule au-delà du contenu,
+     ce qui écrasait les graphiques Recharts en colonnes filiformes */
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.bento-card h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.95rem;
+  color: #333;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.bento-donut {
+  grid-area: donut;
+  min-height: 300px;
+}
+
+.bento-priority {
+  grid-area: priority;
+  min-height: 300px;
+}
+
+.bento-workload {
+  grid-area: workload;
+  min-height: 260px;
+}
+
+.bento-recent {
+  grid-area: recent;
+  min-height: 300px;
+}
+
+/* Force les conteneurs Recharts à occuper tout l'espace disponible,
+   sans quoi ils retombent sur leur taille minimale intrinsèque */
+.bento-card .recharts-responsive-container {
+  width: 100% !important;
+  min-width: 0 !important;
+  flex: 1;
+}
+
+/* Cartes KPI empilées, chacune avec un liseré de couleur distinct */
+.kpi-card {
+  background: white;
+  border-radius: 14px;
+  padding: 1rem 1.1rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  border-left: 4px solid #ccc;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  flex: 1;
+  justify-content: center;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.kpi-value {
+  font-size: 1.9rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #1F3B57;
+}
+
+.kpi-label {
+  font-size: 0.8rem;
+  color: #777;
+}
+
+.kpi-navy { border-left-color: #1F3B57; }
+.kpi-blue { border-left-color: #3498db; }
+.kpi-success { border-left-color: #2ecc71; }
+.kpi-success .kpi-value { color: #2ecc71; }
+.kpi-neutral { border-left-color: #bbb; }
+.kpi-danger { border-left-color: #e74c3c; }
+.kpi-danger .kpi-value { color: #e74c3c; }
+
+/* Mini légende sous le donut */
+.mini-legend {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 0.25rem;
+  flex-shrink: 0;
+}
+
+.mini-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  color: #666;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* Tâches récentes — liste verticale */
+.recent-tasks-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.recent-task-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+}
+
+.recent-task-item:last-child {
+  border-bottom: none;
+}
+
+.recent-task-item:hover {
+  background: #fafafa;
+}
+
+.status-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 0.3rem;
+}
+
+.status-dot.status-a_faire { background-color: #95a5a6; }
+.status-dot.status-en_cours { background-color: #3498db; }
+.status-dot.status-terminee { background-color: #2ecc71; }
+.status-dot.status-archivee { background-color: #7f8c8d; }
+
+.recent-task-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.recent-task-title {
+  font-size: 0.85rem;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.recent-task-project {
+  font-size: 0.72rem;
+  color: #999;
+}
+
+/* Responsive : la grille bento se replie en une seule colonne */
+@media (max-width: 900px) {
+  .stats-bento {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "kpis"
+      "donut"
+      "priority"
+      "workload"
+      "recent";
+  }
+  .bento-kpis {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .kpi-card {
+    min-width: 130px;
+  }
 }
