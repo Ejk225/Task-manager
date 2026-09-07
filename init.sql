@@ -5,7 +5,8 @@ CREATE TABLE IF NOT EXISTS "Utilisateur" (
   nom            VARCHAR(100) NOT NULL,
   email          VARCHAR(150) UNIQUE NOT NULL,
   mot_de_passe   VARCHAR(255) NOT NULL,
-  role           VARCHAR(20) DEFAULT 'user',
+  role           VARCHAR(20) NOT NULL DEFAULT 'membre'
+                 CHECK (role IN ('admin', 'manager', 'membre')),
   date_creation  TIMESTAMP DEFAULT NOW()
 );
 
@@ -67,6 +68,7 @@ CREATE TABLE IF NOT EXISTS "HistoriqueTache" (
   champ_modifie     VARCHAR(50) NOT NULL,
   ancienne_valeur   TEXT,
   nouvelle_valeur   TEXT,
+  details           JSONB,
   date_modification TIMESTAMP DEFAULT NOW(),
   id_tache          INTEGER NOT NULL REFERENCES "Tache"(id_tache) ON DELETE CASCADE,
   id_utilisateur    INTEGER NOT NULL REFERENCES "Utilisateur"(id_utilisateur)

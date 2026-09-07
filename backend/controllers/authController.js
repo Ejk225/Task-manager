@@ -4,7 +4,7 @@ const { generateToken } = require('../utils/jwtUtils');
 // Inscription d'un nouvel utilisateur
 const register = async (req, res) => {
   try {
-    const { nom, email, mot_de_passe, role } = req.body;
+    const { nom, email, mot_de_passe } = req.body;
 
     // Validation des champs
     if (!nom || !email || !mot_de_passe) {
@@ -23,12 +23,12 @@ const register = async (req, res) => {
       });
     }
 
-    // Créer le nouvel utilisateur
+    // Créer le nouvel utilisateur (le rôle n'est jamais pris depuis la requête client)
     const newUser = await User.create({
       nom,
       email,
       mot_de_passe,
-      role: role || 'membre'
+      role: 'membre'
     });
 
     // Générer le token JWT
