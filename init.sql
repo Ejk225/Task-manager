@@ -73,3 +73,6 @@ CREATE TABLE IF NOT EXISTS "HistoriqueTache" (
   id_tache          INTEGER NOT NULL REFERENCES "Tache"(id_tache) ON DELETE CASCADE,
   id_utilisateur    INTEGER NOT NULL REFERENCES "Utilisateur"(id_utilisateur)
 );
+
+CREATE INDEX IF NOT EXISTS idx_historique_details
+  ON "HistoriqueTache" USING GIN (details);
