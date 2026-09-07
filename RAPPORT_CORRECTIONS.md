@@ -2,7 +2,7 @@
 
 Projet : **Task-manager**
 Branche de travail : `claude/brave-babbage-vzhrv3`
-Statut : **modifications locales, non commitées, non poussées sur GitHub** — à tester en local avant tout commit.
+Statut : **3 commits locaux, non poussés sur GitHub** (`git log` les montre, `git push` n'a jamais été exécuté) — testé en local avec succès (voir §3 et §6.4), en attente de ta validation finale avant push.
 
 ---
 
@@ -155,4 +155,155 @@ npm run dev
 - `.env.example` (à committer, sert de modèle pour toute personne qui clone le projet)
 - `RAPPORT_CORRECTIONS.md` (ce fichier)
 
-Rien n'a été commité ni poussé — à toi de valider en local puis de committer/pousser quand tu es prêt.
+Rien n'a été poussé sur GitHub (3 commits locaux) — à toi de valider puis de pousser quand tu es prêt.
+
+---
+
+## 6. Tests manuels effectués (session du 7 septembre)
+
+Le projet a été lancé en local via `docker compose up --build` et testé manuellement dans le navigateur. Résultats :
+
+1. **Inscription/connexion** : OK.
+2. **Backend + PostgreSQL** : OK après réinitialisation du volume Docker (`docker compose down -v`) — nécessaire car un volume `postgres_data` préexistant gardait l'ancien mot de passe (Postgres ne relit `POSTGRES_PASSWORD` qu'à la toute première initialisation du volume).
+3. **Frontend** : plantait en boucle (`nginx: invalid number of arguments in "listen" directive`) car `docker-compose.yml` ne fournit pas de variable `PORT` au service frontend, et le `Dockerfile` (pensé pour Railway) fait un `envsubst` dessus. **Corrigé** en ajoutant `ENV PORT=80` par défaut dans `frontend/Dockerfile` (Railway continue de fonctionner car il fournit toujours sa propre variable `PORT`, qui prime).
+4. **`frontend/public/config.js`** pointait en dur vers l'URL de production Railway (comportement voulu par le fichier lui-même, cf. son commentaire "NE JAMAIS COMMIT CE FICHIER MODIFIÉ POUR DU LOCAL") — basculé temporairement vers `localhost:5000` pour les tests, à remettre sur la valeur de prod avant tout commit/push.
+5. **Faille §2.5 (téléchargement de pièce jointe)** : testée avec deux comptes réels (A membre du projet, B non-membre). Requête `fetch()` authentifiée en tant que B sur `/api/attachments/1/download` → **403 confirmé**. Avant le correctif, cette même requête aurait renvoyé 200.
+6. **Correctif §2.3 (rôle forcé à l'inscription)** : requête `POST /api/auth/register` avec `role: "admin"` explicite dans le corps → l'utilisateur créé a bien `role: "membre"` en retour. Confirmé.
+7. **Rôle invité (non-régression)** : un membre ajouté avec le rôle "invité" reçoit bien un message "Les invités ne peuvent pas effectuer cette action" en tentant de changer le statut d'une tâche. Confirmé, la suppression des logs de debug (§2.4) n'a rien cassé.
+
+**Commit supplémentaire pendant les tests** : `frontend/Dockerfile` — ajout de `ENV PORT=80` (valeur par défaut pour le développement local uniquement, sans impact sur Railway).
+
+---
+
+## 7. Analyse de conformité — Cahier des charges CDA + Dossier de Projet
+
+Le candidat a partagé son **Cahier des charges**, sa **Liste des compétences travaillées** et son **Dossier de Projet** (titre RNCP Concepteur Développeur d'Applications, session juillet 2026). Comparaison avec le code réel du dépôt :
+
+### 7.1 Conformité au cahier des charges
+
+| Exigence | Statut |
+|---|---|
+| Authentification (bcrypt, JWT sur toutes routes protégées) | ✅ Conforme |
+| Projet : seul le créateur modifie/supprime | ✅ Conforme (`checkProjectOwnership`) |
+| Invité = lecture seule stricte | ✅ Conforme (testé §6.7) |
+| "Seuls le créateur de la tâche ou le membre assigné peuvent modifier son statut/contenu" | ❌ **Non conforme.** Le modèle `Tache` n'a pas de champ `id_utilisateur_createur` : n'importe quel membre du projet peut modifier n'importe quelle tâche (`checkTaskPermission` ne vérifie que l'appartenance au projet, pas la propriété de la tâche). |
+| Commentaires : ordre antéchronologique, seul l'auteur modifie/supprime | ✅ Conforme |
+| Pièces jointes | ✅ Conforme (après correctif §2.5) |
+| Dashboard + export PDF | ✅ Conforme |
+| "Rôles Administrateur/Membre/Invité assignables par le propriétaire" | ⚠️ Partiel — `memberController.addMember` n'autorise que `['membre','invite']` ; impossible de promouvoir un membre "Administrateur", un seul propriétaire par projet en pratique. |
+| "Aucune donnée sensible en clair dans le code source versionné" | ❌ Ne l'était pas avant le correctif §2.1 (secrets en dur dans `docker-compose.yml` commité). |
+| "Vérification systématique de la propriété des ressources" | ❌ Ne l'était pas avant le correctif §2.5 (faille de téléchargement). |
+
+### 7.2 Écart trouvé entre le Dossier de Projet et le dépôt réel (important pour la soutenance)
+
+L'**Annexe B** du Dossier de Projet (script SQL) montre un schéma avec `TIMESTAMPTZ` partout, la colonne `details JSONB`, et un index GIN dessus. Le **vrai `init.sql` du dépôt** (avant nos correctifs) utilisait des `TIMESTAMP` classiques, **n'avait pas** la colonne `details`, et **pas d'index GIN**. Le récit du chapitre 9 ("Difficulté 6 : migration vers TIMESTAMPTZ appliquée en dev et en prod") décrit une correction qui n'a jamais été reportée dans le script SQL versionné — écart facilement vérifiable par un jury comparant l'annexe au dépôt GitHub réel.
+
+**Décision prise avec le candidat** : ne pas modifier le schéma de production pour coller à l'annexe (risque inutile, changement de type de colonne sur une base en prod). À la place :
+- **Ajout sûr et non-destructif** : un index GIN sur `HistoriqueTache.details` a été ajouté à `init.sql` (commit local, voir §5) — une opération purement additive qui ne modifie aucune donnée existante. **Reste à faire par le candidat** : exécuter une fois sur la base de production (voir §8 ci-dessous) pour que l'affirmation de l'Annexe B et de la compétence CP8 soit vraie partout, pas seulement sur une nouvelle installation.
+- **Le dossier de projet doit être corrigé** (pas le code) pour refléter la réalité : remplacer `TIMESTAMPTZ` par `TIMESTAMP` dans l'Annexe B, et adoucir le récit de la "Difficulté 6" pour ne pas prétendre à une migration qui n'a pas eu lieu. Textes de remplacement fournis en §8.
+- Autre point mineur relevé : le plan de tests (§7.2 du dossier, 12 scénarios) ne couvre aucun scénario sur le téléchargement de pièce jointe — c'est justement là qu'une vraie faille a été trouvée et corrigée aujourd'hui (§2.5). Ajouter un scénario T13 renforcerait la soutenance.
+
+---
+
+## 8. À faire à la reprise (rien de fait pour l'instant sur ces 2 points)
+
+### 8.1 SQL à exécuter une fois sur la base de production (Railway)
+Non destructif, sûr, ajoute uniquement un index :
+```sql
+CREATE INDEX IF NOT EXISTS idx_historique_details
+  ON "HistoriqueTache" USING GIN (details);
+```
+
+### 8.2 Corriger le Dossier de Projet (document source, pas le code)
+
+**Annexe B — remplacer le bloc SQL actuel par celui-ci** (seul changement : `TIMESTAMP` au lieu de `TIMESTAMPTZ` partout ; le reste — colonne `details`, index GIN — était déjà correct dans l'annexe et correspond maintenant au dépôt réel après le correctif §7.2) :
+
+```sql
+CREATE TABLE IF NOT EXISTS "Utilisateur" ( 
+  id_utilisateur SERIAL PRIMARY KEY, 
+  nom            VARCHAR(100) NOT NULL, 
+  email          VARCHAR(150) UNIQUE NOT NULL, 
+  mot_de_passe   VARCHAR(255) NOT NULL, 
+  role           VARCHAR(20) NOT NULL DEFAULT 'membre' 
+                 CHECK (role IN ('admin','manager','membre')), 
+  date_creation  TIMESTAMP DEFAULT NOW() 
+); 
+  
+CREATE TABLE IF NOT EXISTS "Projet" ( 
+  id_projet     SERIAL PRIMARY KEY, 
+  nom           VARCHAR(200) NOT NULL, 
+  description   TEXT, 
+  date_creation TIMESTAMP DEFAULT NOW(), 
+  id_utilisateur_createur INTEGER NOT NULL 
+    REFERENCES "Utilisateur"(id_utilisateur) 
+); 
+  
+CREATE TABLE IF NOT EXISTS "Participe" ( 
+  id_utilisateur INTEGER NOT NULL REFERENCES "Utilisateur"(id_utilisateur), 
+  id_projet      INTEGER NOT NULL REFERENCES "Projet"(id_projet) ON DELETE CASCADE, 
+  role           VARCHAR(20) NOT NULL DEFAULT 'membre' 
+                 CHECK (role IN ('proprietaire','membre','invite')), 
+  date_ajout     TIMESTAMP DEFAULT NOW(), 
+  PRIMARY KEY (id_utilisateur, id_projet) 
+); 
+
+CREATE TABLE IF NOT EXISTS "Tache" ( 
+  id_tache      SERIAL PRIMARY KEY, 
+  titre         VARCHAR(200) NOT NULL, 
+  description   TEXT, 
+  statut        VARCHAR(20) NOT NULL DEFAULT 'a_faire' 
+                CHECK (statut IN ('a_faire','en_cours','terminee','archivee')), 
+  priorite      VARCHAR(20) NOT NULL DEFAULT 'moyenne' 
+                CHECK (priorite IN ('basse','moyenne','haute','urgente')), 
+  date_echeance DATE, 
+  date_creation TIMESTAMP DEFAULT NOW(), 
+  id_projet     INTEGER NOT NULL REFERENCES "Projet"(id_projet) ON DELETE CASCADE, 
+  id_utilisateur_assigne INTEGER REFERENCES "Utilisateur"(id_utilisateur) 
+); 
+  
+CREATE TABLE IF NOT EXISTS "Commentaire" ( 
+  id_commentaire   SERIAL PRIMARY KEY, 
+  contenu          TEXT NOT NULL, 
+  date_commentaire TIMESTAMP DEFAULT NOW(), 
+  id_tache         INTEGER NOT NULL REFERENCES "Tache"(id_tache) ON DELETE CASCADE, 
+  id_utilisateur   INTEGER NOT NULL REFERENCES "Utilisateur"(id_utilisateur) 
+); 
+
+CREATE TABLE IF NOT EXISTS "PieceJointe" ( 
+  id_piece_jointe SERIAL PRIMARY KEY, 
+  nom_fichier     VARCHAR(255) NOT NULL, 
+  nom_original    VARCHAR(255) NOT NULL, 
+  type_mime       VARCHAR(100) NOT NULL, 
+  taille          INTEGER NOT NULL, 
+  chemin          VARCHAR(500) NOT NULL, 
+  date_upload     TIMESTAMP DEFAULT NOW(), 
+  id_tache        INTEGER NOT NULL REFERENCES "Tache"(id_tache) ON DELETE CASCADE, 
+  id_utilisateur  INTEGER NOT NULL REFERENCES "Utilisateur"(id_utilisateur) 
+); 
+  
+-- Table d'historique : support de la compétence CP8 (SQL + NoSQL) 
+CREATE TABLE IF NOT EXISTS "HistoriqueTache" ( 
+  id_historique     SERIAL PRIMARY KEY, 
+  champ_modifie     VARCHAR(50) NOT NULL, 
+  ancienne_valeur   TEXT, 
+  nouvelle_valeur   TEXT, 
+  details           JSONB,  -- document JSON à structure variable 
+  date_modification TIMESTAMP DEFAULT NOW(), 
+  id_tache          INTEGER NOT NULL REFERENCES "Tache"(id_tache) ON DELETE CASCADE, 
+  id_utilisateur    INTEGER NOT NULL REFERENCES "Utilisateur"(id_utilisateur) 
+); 
+  
+CREATE INDEX idx_historique_details 
+  ON "HistoriqueTache" USING GIN (details);
+```
+
+**"Difficulté 6" — remplacer le paragraphe actuel du dossier par celui-ci** (garde la démarche de diagnostic, sans prétendre à une migration qui n'a pas eu lieu) :
+
+> **Difficulté 6 : Décalage horaire sur l'horodatage des commentaires**
+> Symptôme : un commentaire tout juste publié pouvait afficher un horodatage décalé de plusieurs heures selon le fuseau du serveur consultant les données.
+> Diagnostic : les colonnes de date (`date_commentaire`, `date_creation`, etc.) sont typées `TIMESTAMP WITHOUT TIME ZONE`, ce qui ne conserve aucune information de fuseau horaire lors du stockage — la valeur peut alors être réinterprétée différemment selon le fuseau du client qui la lit.
+> Solution envisagée : la correction propre consiste à migrer ces colonnes vers `TIMESTAMPTZ`, ce qui nécessite une opération de migration sur la base de production (changement de type de colonne). Par prudence, cette migration a été **différée** plutôt qu'appliquée en urgence sur une base en production, pour ne pas introduire de risque de verrouillage de table sans fenêtre de maintenance dédiée. Elle est documentée comme axe d'amélioration prioritaire pour une prochaine itération (cf. chapitre Perspectives d'évolution).
+
+### 8.3 Optionnel (non bloquant, mentionné pour mémoire)
+- Ajouter un scénario T13 au plan de tests : "Téléchargement d'une pièce jointe par un utilisateur non-membre du projet → 403" (cf. §7.2).
+- Exécuter réellement `npm audit` (backend et frontend) avant la restitution, pour que l'affirmation "veille sécurité via npm audit" (CP11) soit vérifiable, pas seulement déclarative.
