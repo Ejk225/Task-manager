@@ -186,7 +186,7 @@ Le candidat a partagé son **Cahier des charges**, sa **Liste des compétences t
 | Authentification (bcrypt, JWT sur toutes routes protégées) | ✅ Conforme |
 | Projet : seul le créateur modifie/supprime | ✅ Conforme (`checkProjectOwnership`) |
 | Invité = lecture seule stricte | ✅ Conforme (testé §6.7) |
-| "Seuls le créateur de la tâche ou le membre assigné peuvent modifier son statut/contenu" | ❌ **Non conforme.** Le modèle `Tache` n'a pas de champ `id_utilisateur_createur` : n'importe quel membre du projet peut modifier n'importe quelle tâche (`checkTaskPermission` ne vérifie que l'appartenance au projet, pas la propriété de la tâche). |
+| "Seuls le créateur de la tâche ou le membre assigné peuvent modifier son statut/contenu" | ✅ **Corrigé le 10/09** (voir §9). |
 | Commentaires : ordre antéchronologique, seul l'auteur modifie/supprime | ✅ Conforme |
 | Pièces jointes | ✅ Conforme (après correctif §2.5) |
 | Dashboard + export PDF | ✅ Conforme |
@@ -305,5 +305,33 @@ CREATE INDEX idx_historique_details
 > Solution envisagée : la correction propre consiste à migrer ces colonnes vers `TIMESTAMPTZ`, ce qui nécessite une opération de migration sur la base de production (changement de type de colonne). Par prudence, cette migration a été **différée** plutôt qu'appliquée en urgence sur une base en production, pour ne pas introduire de risque de verrouillage de table sans fenêtre de maintenance dédiée. Elle est documentée comme axe d'amélioration prioritaire pour une prochaine itération (cf. chapitre Perspectives d'évolution).
 
 ### 8.3 Optionnel (non bloquant, mentionné pour mémoire)
-- Ajouter un scénario T13 au plan de tests : "Téléchargement d'une pièce jointe par un utilisateur non-membre du projet → 403" (cf. §7.2).
+- Ajouter un scénario T13 au plan de tests : "Téléchargement d'une pièce jointe par un utilisateur non-membre du projet → 403" (cf. §7.2). Ajouter aussi un T14 : "Un membre du projet, ni créateur ni assigné, tente de modifier une tâche → 403" (cf. §9).
 - Exécuter réellement `npm audit` (backend et frontend) avant la restitution, pour que l'affirmation "veille sécurité via npm audit" (CP11) soit vérifiable, pas seulement déclarative.
+
+---
+
+## 9. Correctif du 10/09 — restriction de modification des tâches (créateur / assigné / propriétaire)
+
+Suite à l'écart relevé en §7.1, le candidat a choisi l'option "corriger le code" plutôt que documenter la limitation. Mise en œuvre :
+
+**Changements** :
+- `init.sql` : ajout d'une colonne `id_utilisateur_createur` (nullable) sur `Tache`.
+- `backend/models/Task.js` : ajout du champ correspondant au modèle Sequelize.
+- `backend/controllers/taskController.js` (`createTask`) : la colonne est renseignée automatiquement avec l'utilisateur qui crée la tâche.
+- `backend/middlewares/taskMiddleware.js` : nouveau middleware `checkTaskOwnership` — autorise la modification si l'utilisateur est le créateur de la tâche, la personne assignée, **ou le propriétaire du projet** (extension volontaire par rapport au texte strict du CDC, cf. justification ci-dessous).
+- `backend/routes/taskRoutes.js` : `checkTaskOwnership` branché sur `PUT /tasks/:id`, `DELETE /tasks/:id`, `PUT /tasks/:id/assign`, `PUT /tasks/:id/status` (pas sur la création, qui ne s'applique pas encore à une tâche existante).
+
+**Rétrocompatibilité** : les tâches créées avant ce correctif ont `id_utilisateur_createur = NULL` en base. Le middleware laisse passer ce cas (`if (task.id_utilisateur_createur == null) return next()`) plutôt que de bloquer rétroactivement des tâches existantes — seules les nouvelles tâches sont soumises à la restriction.
+
+**Écart assumé par rapport au texte du CDC** : le CDC dit littéralement "le créateur de la tâche ou le membre assigné". On a ajouté "ou le propriétaire du projet" car une lecture stricte empêcherait Alice (persona Manager/Administrateur, cf. Annexe A du CDC) de corriger une tâche qu'elle n'a ni créée ni ne s'est assignée dans son propre projet — ce qui semble être un oubli de rédaction plutôt qu'une intention métier. À mentionner si le jury pose la question : c'est un choix assumé et justifiable, pas un contournement.
+
+**À faire pour que ce soit actif partout (reste à ta charge)** :
+1. **En local** : il faut que la base ait la nouvelle colonne. Comme `init.sql` ne s'exécute qu'au tout premier démarrage du volume Postgres, relance `docker compose down -v && docker compose up --build` (ou exécute l'ALTER TABLE ci-dessous directement sur ta base locale).
+2. **En production (Railway)** : exécuter une fois, via l'éditeur SQL de Railway :
+   ```sql
+   ALTER TABLE "Tache" ADD COLUMN IF NOT EXISTS id_utilisateur_createur INTEGER REFERENCES "Utilisateur"(id_utilisateur);
+   ```
+   Non destructif : ajoute une colonne vide (`NULL`) sur les lignes existantes, ne supprime ni ne modifie aucune donnée.
+3. **Tester** : se connecter avec un compte membre du projet qui n'est ni créateur ni assigné à une tâche donnée, tenter de changer son statut → doit renvoyer 403. Un membre qui crée sa propre tâche doit pouvoir la modifier normalement.
+
+**Vérifications faites côté code (pas testé en conditions réelles avec une vraie base)** : `node --check` sur les 4 fichiers modifiés → syntaxe valide. La logique réutilise `req.task.projet` déjà chargé par `checkTaskPermission` (association Sequelize `Task.belongsTo(Project, { as: 'projet' })` vérifiée dans `models/index.js`), donc pas de requête supplémentaire.

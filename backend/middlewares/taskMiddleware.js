@@ -96,7 +96,34 @@ const checkTaskPermission = async (req, res, next) => {
   }
 };
 
+// Middleware pour restreindre la modification d'une tâche à son créateur,
+// à la personne assignée, ou au propriétaire du projet (cf. cahier des charges §4.3).
+// Les tâches créées avant ce correctif (id_utilisateur_createur = null) restent
+// modifiables par tout membre du projet, pour ne pas casser l'existant.
+const checkTaskOwnership = (req, res, next) => {
+  const task = req.task;
+  const userId = req.user.id;
+
+  if (task.id_utilisateur_createur === null || task.id_utilisateur_createur === undefined) {
+    return next();
+  }
+
+  const isCreator = task.id_utilisateur_createur === userId;
+  const isAssigned = task.id_utilisateur_assigne === userId;
+  const isProjectOwner = task.projet.id_utilisateur_createur === userId;
+
+  if (!isCreator && !isAssigned && !isProjectOwner) {
+    return res.status(403).json({
+      success: false,
+      message: 'Seul le créateur de la tâche, la personne assignée ou le propriétaire du projet peuvent effectuer cette action'
+    });
+  }
+
+  next();
+};
+
 module.exports = {
   checkProjectMembership,
-  checkTaskPermission
+  checkTaskPermission,
+  checkTaskOwnership
 };

@@ -40,7 +40,8 @@ CREATE TABLE IF NOT EXISTS "Tache" (
   date_echeance          DATE,
   date_creation          TIMESTAMP DEFAULT NOW(),
   id_projet              INTEGER NOT NULL REFERENCES "Projet"(id_projet) ON DELETE CASCADE,
-  id_utilisateur_assigne INTEGER REFERENCES "Utilisateur"(id_utilisateur)
+  id_utilisateur_assigne INTEGER REFERENCES "Utilisateur"(id_utilisateur),
+  id_utilisateur_createur INTEGER REFERENCES "Utilisateur"(id_utilisateur)
 );
 
 CREATE TABLE IF NOT EXISTS "Commentaire" (

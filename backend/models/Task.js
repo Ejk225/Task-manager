@@ -72,6 +72,15 @@ const Task = sequelize.define('Tache', {
       model: 'Utilisateur',
       key: 'id_utilisateur'
     }
+  },
+  id_utilisateur_createur: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    field: 'id_utilisateur_createur',
+    references: {
+      model: 'Utilisateur',
+      key: 'id_utilisateur'
+    }
   }
 }, {
   tableName: 'Tache',
