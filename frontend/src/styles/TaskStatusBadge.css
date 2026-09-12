@@ -7,81 +7,74 @@
 
 /* Badges de statut */
 .status-badge {
-  padding: 0.3rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.75rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.72rem;
   font-weight: 600;
   white-space: nowrap;
 }
 
 .status-badge.status-a_faire {
-  background-color: #95a5a6;
-  color: white;
+  background-color: var(--color-status-todo-soft);
+  color: var(--color-status-todo);
 }
 
 .status-badge.status-en_cours {
-  background-color: #3498db;
-  color: white;
+  background-color: var(--color-status-progress-soft);
+  color: var(--color-status-progress);
 }
 
 .status-badge.status-terminee {
-  background-color: #2ecc71;
-  color: white;
+  background-color: var(--color-status-done-soft);
+  color: var(--color-status-done);
 }
 
 .status-badge.status-archivee {
-  background-color: #7f8c8d;
-  color: white;
+  background-color: var(--color-status-archived-soft);
+  color: var(--color-status-archived);
 }
 
 /* Badges de priorité */
 .priority-badge {
-  padding: 0.3rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.75rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.72rem;
   font-weight: 600;
   white-space: nowrap;
 }
 
 .priority-badge.priority-basse {
-  background-color: #1abc9c;
-  color: white;
+  background-color: var(--color-priority-low-soft);
+  color: var(--color-priority-low);
 }
 
 .priority-badge.priority-moyenne {
-  background-color: #f39c12;
-  color: white;
+  background-color: var(--color-priority-medium-soft);
+  color: var(--color-priority-medium);
 }
 
 .priority-badge.priority-haute {
-  background-color: #e67e22;
-  color: white;
+  background-color: var(--color-priority-high-soft);
+  color: var(--color-priority-high);
 }
 
 .priority-badge.priority-urgente {
-  background-color: #e74c3c;
-  color: white;
+  background-color: var(--color-priority-urgent-soft);
+  color: var(--color-priority-urgent);
 }
 
 /* Badge en retard */
 .overdue-badge {
-  padding: 0.3rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.72rem;
   font-weight: 600;
-  background-color: #e74c3c;
-  color: white;
+  background-color: var(--color-danger-soft);
+  color: var(--color-danger);
   white-space: nowrap;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.7;
-  }
 }
 
 /* Responsive */
@@ -89,7 +82,7 @@
   .status-badge,
   .priority-badge,
   .overdue-badge {
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     padding: 0.25rem 0.6rem;
   }
 }

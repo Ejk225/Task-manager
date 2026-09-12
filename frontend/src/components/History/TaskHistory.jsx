@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../../services/api';
+import Icon from '../Icon';
 import '../../styles/TaskHistory.css';
 
 const champsLabels = {
@@ -58,7 +59,7 @@ const renderChange = (entry) => {
     if (entry.details.type === 'piece_jointe') {
       return (
         <span className="history-item__change">
-          📎 Pièce jointe ajoutée : <strong>{entry.details.fichier?.nom}</strong>
+          <Icon name="paperclip" size={13} /> Pièce jointe ajoutée : <strong>{entry.details.fichier?.nom}</strong>
           <span className="history-item__meta">
             {' '}({Math.round((entry.details.fichier?.taille || 0) / 1024)} Ko)
           </span>
@@ -68,7 +69,7 @@ const renderChange = (entry) => {
     if (entry.details.type === 'reassignation') {
       return (
         <span className="history-item__change">
-          🔄 Réassigné de <strong>{entry.details.ancien_assigne?.nom || '—'}</strong>
+          <Icon name="refreshCw" size={13} /> Réassigné de <strong>{entry.details.ancien_assigne?.nom || '—'}</strong>
           {' '}à <strong>{entry.details.nouveau_assigne?.nom || '—'}</strong>
         </span>
       );
@@ -117,7 +118,7 @@ const TaskHistoryComponent = ({ taskId }) => {
   return (
     <section className="history-section">
       <h2 className="history-title">
-        📜 Historique des modifications
+        <Icon name="history" size={16} /> Historique des modifications
         <span className="history-count">{history.length}</span>
       </h2>
 

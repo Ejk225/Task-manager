@@ -5,6 +5,7 @@ import projectService from '../../services/projectService';
 import taskService from '../../services/taskService';
 import { useAuth } from '../../context/AuthContext';
 import { exportProjectDetailToPDF } from '../../services/pdfExportService';
+import Icon from '../../components/Icon';
 import '../../styles/ProjectDetail.css';
 
 const ProjectDetail = () => {
@@ -112,7 +113,7 @@ const ProjectDetail = () => {
       <Navbar />
       <div className="project-detail-container">
         <button className="btn-back" onClick={() => navigate('/projects')}>
-          ← Retour aux projets
+          <Icon name="arrowLeft" size={15} /> Retour aux projets
         </button>
 
         <div className="project-detail-header">
@@ -126,7 +127,7 @@ const ProjectDetail = () => {
               className="btn-view-tasks"
               onClick={() => navigate(`/projects/${id}/tasks`)}
             >
-              📋 Voir les tâches
+              <Icon name="clipboard" size={15} /> Voir les tâches
             </button>
             {isOwner && (
               <>
@@ -134,19 +135,19 @@ const ProjectDetail = () => {
                   className="btn-edit"
                   onClick={() => navigate(`/projects/${id}/edit`)}
                 >
-                  ✏️ Modifier
+                  <Icon name="edit" size={14} /> Modifier
                 </button>
                 <button
                   className="btn-export-pdf"
                   onClick={() => exportProjectDetailToPDF(project, members, tasks)}
                 >
-                  📥 Télécharger PDF
+                  <Icon name="download" size={15} /> Télécharger PDF
                 </button>
                 <button
                   className="btn-delete"
                   onClick={handleDelete}
                 >
-                  🗑️ Supprimer
+                  <Icon name="trash" size={14} /> Supprimer
                 </button>
               </>
             )}
@@ -167,7 +168,7 @@ const ProjectDetail = () => {
                   className="btn-add-member"
                   onClick={() => setShowAddMember(!showAddMember)}
                 >
-                  ➕ Inviter un membre
+<Icon name="plus" size={15} /> Inviter un membre
                 </button>
               )}
             </div>

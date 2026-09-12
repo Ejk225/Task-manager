@@ -2,14 +2,14 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
 const COLORS = {
-  primary: [102, 126, 234],
-  dark: [44, 62, 80],
-  gray: [128, 128, 128],
-  light: [245, 245, 245],
+  primary: [181, 80, 47],
+  dark: [43, 38, 34],
+  gray: [107, 97, 84],
+  light: [244, 238, 228],
   white: [255, 255, 255],
-  success: [46, 204, 113],
-  danger: [231, 76, 60],
-  warning: [243, 156, 18],
+  success: [63, 122, 94],
+  danger: [166, 58, 43],
+  warning: [166, 116, 31],
 };
 
 const addHeader = (doc, title, subtitle = '') => {
@@ -96,7 +96,7 @@ export const exportProjectsToPDF = (projects) => {
       fontStyle: 'bold',
       fontSize: 10
     },
-    alternateRowStyles: { fillColor: [248, 249, 255] },
+    alternateRowStyles: { fillColor: [250, 246, 240] },
     styles: { fontSize: 9, cellPadding: 4 },
     columnStyles: {
       0: { fontStyle: 'bold', cellWidth: 55 },
@@ -171,7 +171,7 @@ export const exportProjectDetailToPDF = (project, members, tasks = []) => {
     body: members.map(m => [m.nom, m.email, m.role || 'Membre']),
     headStyles: { fillColor: COLORS.primary, textColor: COLORS.white, fontSize: 9 },
     styles: { fontSize: 9, cellPadding: 3 },
-    alternateRowStyles: { fillColor: [248, 249, 255] },
+    alternateRowStyles: { fillColor: [250, 246, 240] },
     margin: { left: 14, right: 14 }
   });
 
@@ -195,7 +195,7 @@ export const exportProjectDetailToPDF = (project, members, tasks = []) => {
     ]),
     headStyles: { fillColor: COLORS.primary, textColor: COLORS.white, fontSize: 9 },
     styles: { fontSize: 8, cellPadding: 3 },
-    alternateRowStyles: { fillColor: [248, 249, 255] },
+    alternateRowStyles: { fillColor: [250, 246, 240] },
     columnStyles: {
       0: { cellWidth: 60 },
       1: { cellWidth: 28, halign: 'center' },
@@ -248,7 +248,7 @@ export const exportTasksToPDF = (projectName, tasks, filters = {}) => {
       fontSize: 9
     },
     styles: { fontSize: 8, cellPadding: 3 },
-    alternateRowStyles: { fillColor: [248, 249, 255] },
+    alternateRowStyles: { fillColor: [250, 246, 240] },
     columnStyles: {
       0: { cellWidth: 55, fontStyle: 'bold' },
       1: { cellWidth: 65 },

@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import TaskStatusBadge from './TaskStatusBadge';
+import Icon from './Icon';
 import '../styles/TaskCard.css';
 
 const TaskCard = ({ task, onStatusChange, onDelete, projectId }) => {
@@ -48,10 +49,10 @@ const TaskCard = ({ task, onStatusChange, onDelete, projectId }) => {
       <div className="task-meta">
         <div className="task-info">
           <span className="info-item">
-            👤 {task.utilisateur_assigne?.nom || 'Non assigné'}
+            <Icon name="user" size={14} /> {task.utilisateur_assigne?.nom || 'Non assigné'}
           </span>
           <span className="info-item">
-            📅 {formatDate(task.date_echeance)}
+            <Icon name="calendar" size={14} /> {formatDate(task.date_echeance)}
           </span>
         </div>
       </div>
@@ -63,7 +64,7 @@ const TaskCard = ({ task, onStatusChange, onDelete, projectId }) => {
             onClick={(e) => handleStatusChange(e, 'terminee')}
             title="Marquer comme terminé"
           >
-            ✓ Terminer
+            <Icon name="check" size={14} /> Terminer
           </button>
         )}
         {task.statut === 'a_faire' && (
@@ -72,7 +73,7 @@ const TaskCard = ({ task, onStatusChange, onDelete, projectId }) => {
             onClick={(e) => handleStatusChange(e, 'en_cours')}
             title="Passer en cours"
           >
-            ▶ En cours
+            <Icon name="play" size={13} /> En cours
           </button>
         )}
         <button
@@ -80,7 +81,7 @@ const TaskCard = ({ task, onStatusChange, onDelete, projectId }) => {
           onClick={handleDelete}
           title="Supprimer"
         >
-          🗑️
+          <Icon name="trash" size={15} />
         </button>
       </div>
     </div>

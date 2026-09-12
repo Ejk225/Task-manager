@@ -1,53 +1,107 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  /* Typographie */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+
+  /* Surfaces */
+  --color-bg: #faf6f0;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f4eee4;
+  --color-border: #e8e0d4;
+  --color-border-strong: #d9cdb9;
+
+  /* Texte */
+  --color-ink: #2b2622;
+  --color-ink-soft: #6b6154;
+  --color-ink-faint: #9c9284;
+  --color-on-accent: #fdf9f4;
+
+  /* Accents */
+  --color-accent: #b5502f;
+  --color-accent-dark: #93401f;
+  --color-accent-soft: #f3e4dc;
+  --color-secondary: #2f5d50;
+  --color-secondary-soft: #e4eee9;
+
+  /* États sémantiques */
+  --color-danger: #a63a2b;
+  --color-danger-soft: #f5e1dc;
+  --color-success: #3f7a5e;
+  --color-success-soft: #e3eee7;
+  --color-info: #2e5e86;
+  --color-info-soft: #e3ecf3;
+  --color-warning: #a6741f;
+  --color-warning-soft: #f6ead4;
+
+  /* Statuts de tâche */
+  --color-status-todo: #8b8478;
+  --color-status-todo-soft: #ece7de;
+  --color-status-progress: #2e5e86;
+  --color-status-progress-soft: #e3ecf3;
+  --color-status-done: #2f6b4f;
+  --color-status-done-soft: #e3eee7;
+  --color-status-archived: #7a6f63;
+  --color-status-archived-soft: #ece7df;
+
+  /* Priorités */
+  --color-priority-low: #3e7a66;
+  --color-priority-low-soft: #e3efea;
+  --color-priority-medium: #a6741f;
+  --color-priority-medium-soft: #f6ead4;
+  --color-priority-high: #a3541f;
+  --color-priority-high-soft: #f3e1d2;
+  --color-priority-urgent: #a3311f;
+  --color-priority-urgent-soft: #f4dcd6;
+
+  /* Rayons et ombres */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-pill: 999px;
+
+  --shadow-sm: 0 1px 3px rgba(43, 38, 34, 0.07);
+  --shadow-md: 0 6px 20px rgba(43, 38, 34, 0.08);
+  --shadow-lg: 0 16px 40px rgba(43, 38, 34, 0.12);
+
+  font-family: var(--font-sans);
+  color: var(--color-ink);
+  background-color: var(--color-bg);
 }
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: var(--color-accent);
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: var(--color-accent-dark);
 }
 
 body {
   margin: 0;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+h1, h2, h3 {
+  font-family: var(--font-serif);
+  letter-spacing: -0.01em;
 }
 
 button {
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+  font-family: var(--font-sans);
+  background-color: var(--color-surface-alt);
+  color: var(--color-ink);
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: border-color 0.2s, background-color 0.2s;
 }
 button:hover {
-  border-color: #646cff;
+  border-color: var(--color-border-strong);
 }
-button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
 }

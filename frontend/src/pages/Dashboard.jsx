@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import Icon from '../components/Icon';
 import api from '../services/api';
 import {
   BarChart, Bar, PieChart, Pie, Cell,
@@ -11,15 +12,15 @@ import '../styles/Dashboard.css';
 
 // Couleurs alignées sur TaskStatusBadge.css pour une cohérence visuelle totale
 const STATUS_COLORS = {
-  a_faire: '#95a5a6',
-  en_cours: '#3498db',
-  terminee: '#2ecc71'
+  a_faire: '#8b8478',
+  en_cours: '#2e5e86',
+  terminee: '#2f6b4f'
 };
 const PRIORITY_COLORS = {
-  basse: '#1abc9c',
-  moyenne: '#f39c12',
-  haute: '#e67e22',
-  urgente: '#e74c3c'
+  basse: '#3e7a66',
+  moyenne: '#a6741f',
+  haute: '#a3541f',
+  urgente: '#a3311f'
 };
 
 const Dashboard = () => {
@@ -69,7 +70,7 @@ const Dashboard = () => {
         <div className="welcome-card">
           <div className="welcome-header">
             <div>
-              <h2>Bienvenue, {user?.nom} ! 👋</h2>
+              <h2>Bienvenue, {user?.nom}</h2>
               <p className="welcome-date">{today}</p>
             </div>
           </div>
@@ -80,10 +81,10 @@ const Dashboard = () => {
 
           <div className="welcome-actions">
             <button className="btn-go-projects" onClick={() => navigate('/projects')}>
-              📁 Accéder à mes projets
+              <Icon name="folder" size={16} /> Accéder à mes projets
             </button>
             <button className="btn-new-project" onClick={() => navigate('/projects/new')}>
-              ➕ Créer un projet
+              <Icon name="plus" size={16} /> Créer un projet
             </button>
           </div>
         </div>

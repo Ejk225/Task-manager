@@ -1,38 +1,40 @@
 .attachments-section {
   margin-top: 1.5rem;
-  background: white;
-  border-radius: 12px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
   padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  box-shadow: var(--shadow-sm);
 }
 
 .attachments-title {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #2c3e50;
+  font-size: 1.05rem;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  color: var(--color-ink);
   margin: 0 0 1.25rem;
 }
 
 .attachments-count {
-  background: #667eea;
-  color: white;
-  font-size: 0.8rem;
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  font-size: 0.78rem;
   font-weight: 700;
   padding: 2px 8px;
-  border-radius: 10px;
+  border-radius: var(--radius-pill);
 }
 
 .attachments-error {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #fef0f0;
-  color: #e74c3c;
-  border: 1px solid #fad7d7;
-  border-radius: 8px;
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+  border: 1px solid var(--color-priority-urgent-soft);
+  border-radius: var(--radius-sm);
   padding: 0.75rem 1rem;
   margin-bottom: 1rem;
   font-size: 0.9rem;
@@ -41,15 +43,15 @@
 .attachments-error button {
   background: none;
   border: none;
-  color: #e74c3c;
+  color: var(--color-danger);
   cursor: pointer;
   font-size: 1rem;
 }
 
 /* Drop zone */
 .drop-zone {
-  border: 2px dashed #d0d5f5;
-  border-radius: 10px;
+  border: 1.5px dashed var(--color-border-strong);
+  border-radius: var(--radius-md);
   padding: 1.5rem;
   text-align: center;
   cursor: pointer;
@@ -59,13 +61,14 @@
   align-items: center;
   gap: 0.4rem;
   margin-bottom: 1.25rem;
-  background: #f8f9ff;
+  background: var(--color-surface-alt);
+  color: var(--color-ink-soft);
 }
 
 .drop-zone:hover,
 .drop-zone--active {
-  border-color: #667eea;
-  background: #eef0fb;
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
 }
 
 .drop-zone--uploading {
@@ -73,31 +76,31 @@
   opacity: 0.7;
 }
 
-.drop-zone__icon { font-size: 2rem; }
+.drop-zone__icon { color: var(--color-ink-faint); }
 
 .drop-zone__text {
   font-size: 0.9rem;
-  color: #555;
+  color: var(--color-ink-soft);
 }
 
 .drop-zone__hint {
   font-size: 0.75rem;
-  color: #aaa;
+  color: var(--color-ink-faint);
 }
 
 .drop-zone__uploading {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  color: #667eea;
+  color: var(--color-accent);
   font-weight: 600;
 }
 
 .upload-spinner {
   width: 20px;
   height: 20px;
-  border: 3px solid #f0f0f0;
-  border-top-color: #667eea;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-accent);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -114,7 +117,7 @@
 .attachments-loading,
 .attachments-empty {
   text-align: center;
-  color: #aaa;
+  color: var(--color-ink-faint);
   padding: 1rem;
   font-size: 0.9rem;
 }
@@ -125,14 +128,14 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem 1rem;
-  background: #f8f9fa;
-  border-radius: 8px;
+  background: var(--color-surface-alt);
+  border-radius: var(--radius-sm);
   transition: background 0.15s;
 }
 
-.attachment-item:hover { background: #f0f2ff; }
+.attachment-item:hover { background: var(--color-border); }
 
-.attachment-item__icon { font-size: 1.4rem; }
+.attachment-item__icon { color: var(--color-ink-faint); display: flex; }
 
 .attachment-item__info {
   flex: 1;
@@ -145,7 +148,7 @@
 .attachment-item__name {
   font-weight: 600;
   font-size: 0.9rem;
-  color: #2c3e50;
+  color: var(--color-ink);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -153,7 +156,7 @@
 
 .attachment-item__meta {
   font-size: 0.75rem;
-  color: #aaa;
+  color: var(--color-ink-faint);
 }
 
 .attachment-item__actions {
@@ -165,11 +168,12 @@
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 1rem;
   padding: 4px 6px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   transition: background 0.15s;
+  color: var(--color-ink-soft);
+  display: flex;
 }
 
-.btn-attachment--download:hover { background: #eaf4fb; }
-.btn-attachment--delete:hover { background: #fef0f0; }
+.btn-attachment--download:hover { background: var(--color-info-soft); color: var(--color-info); }
+.btn-attachment--delete:hover { background: var(--color-danger-soft); color: var(--color-danger); }

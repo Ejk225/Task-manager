@@ -3,6 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import commentService from '../../services/commentService';
 import CommentItem from './CommentItem';
 import CommentForm from './CommentForm';
+import Icon from '../Icon';
 import '../../styles/Comments.css';
 
 const CommentsList = ({ taskId }) => {
@@ -65,14 +66,14 @@ const CommentsList = ({ taskId }) => {
   return (
     <section className="comments-section">
       <h2 className="comments-title">
-        💬 Commentaires
+        <Icon name="messageCircle" size={16} /> Commentaires
         <span className="comments-count">{comments.length}</span>
       </h2>
 
       {error && (
         <div className="comments-error">
           {error}
-          <button onClick={() => setError('')}>✕</button>
+          <button onClick={() => setError('')}><Icon name="x" size={13} /></button>
         </div>
       )}
 
@@ -84,7 +85,7 @@ const CommentsList = ({ taskId }) => {
         <div className="comments-loading">Chargement des commentaires...</div>
       ) : comments.length === 0 ? (
         <div className="comments-empty">
-          Aucun commentaire pour l'instant. Soyez le premier ! 💬
+          Aucun commentaire pour l'instant. Soyez le premier !
         </div>
       ) : (
         <div className="comments-list">
