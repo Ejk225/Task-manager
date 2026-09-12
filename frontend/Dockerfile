@@ -20,5 +20,7 @@ COPY nginx.conf /etc/nginx/templates/default.conf.template
 # 3. On expose le port dynamiquement (optionnel mais propre pour Railway)
 EXPOSE 80
 
+ENV PORT=80
+
 # 4. LA CORRECTION ICI : On utilise envsubst pour remplacer $PORT avant de lancer Nginx
 CMD ["/bin/sh", "-c", "envsubst '$PORT' < /etc/nginx/templates/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]

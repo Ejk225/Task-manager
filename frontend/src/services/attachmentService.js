@@ -18,11 +18,6 @@ const attachmentService = {
   deleteAttachment: async (attachmentId) => {
     const response = await api.delete(`/attachments/${attachmentId}`);
     return response.data;
-  },
-
-  getDownloadUrl: (attachmentId) => {
-    const token = localStorage.getItem('token');
-    return `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/attachments/${attachmentId}/download?token=${token}`;
   }
 };
 

@@ -1,5 +1,9 @@
 const jwt = require('jsonwebtoken');
 
+if (!process.env.JWT_SECRET) {
+  throw new Error('JWT_SECRET manquant : définissez-le dans le fichier .env avant de démarrer le serveur');
+}
+
 // Générer un token JWT
 const generateToken = (userId, email, role) => {
   const payload = {

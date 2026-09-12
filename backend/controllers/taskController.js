@@ -24,7 +24,8 @@ const createTask = async (req, res) => {
       priorite: priorite || 'moyenne',
       date_echeance,
       id_projet: projectId,
-      id_utilisateur_assigne: id_utilisateur_assigne || null
+      id_utilisateur_assigne: id_utilisateur_assigne || null,
+      id_utilisateur_createur: userId
     });
 
     // Récupérer la tâche avec les relations

@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-const { Attachment, User, Task, Participe } = require('../models');
+const { Attachment, User, Task, Participe, Project } = require('../models');
 const { logComplexEvent } = require('../utils/historyLogger');
 
 // POST /api/tasks/:id/attachments
@@ -106,10 +106,31 @@ const getAttachments = async (req, res) => {
 // GET /api/attachments/:id/download
 const downloadAttachment = async (req, res) => {
   try {
-    const attachment = await Attachment.findByPk(req.params.id);
+    const userId = req.user.id;
+    const attachment = await Attachment.findByPk(req.params.id, {
+      include: [{
+        model: Task,
+        as: 'tache',
+        include: [{ model: Project, as: 'projet' }]
+      }]
+    });
 
     if (!attachment) {
       return res.status(404).json({ success: false, message: 'Fichier introuvable' });
+    }
+
+    // Vérifier que l'utilisateur est membre (ou créateur) du projet de la tâche concernée
+    const task = attachment.tache;
+    const isOwner = task && task.projet && task.projet.id_utilisateur_createur === userId;
+    const isMember = !isOwner && await Participe.findOne({
+      where: { id_utilisateur: userId, id_projet: task?.id_projet }
+    });
+
+    if (!isOwner && !isMember) {
+      return res.status(403).json({
+        success: false,
+        message: 'Accès refusé. Vous n\'êtes pas membre de ce projet.'
+      });
     }
 
     if (!fs.existsSync(attachment.chemin)) {

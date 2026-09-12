@@ -10,7 +10,7 @@ const {
   updateTaskStatus
 } = require('../controllers/taskController');
 const { authenticate } = require('../middlewares/authMiddleware');
-const { checkProjectMembership, checkTaskPermission } = require('../middlewares/taskMiddleware');
+const { checkProjectMembership, checkTaskPermission, checkTaskOwnership } = require('../middlewares/taskMiddleware');
 const { blockGuests } = require('../middlewares/guestMiddleware');
 
 router.use(authenticate);
@@ -21,9 +21,9 @@ router.get('/tasks/:id', checkTaskPermission, getTaskById);
 
 // Écriture — bloqué pour les invités
 router.post('/projects/:projectId/tasks', checkProjectMembership, blockGuests, createTask);
-router.put('/tasks/:id', checkTaskPermission, blockGuests, updateTask);
-router.delete('/tasks/:id', checkTaskPermission, blockGuests, deleteTask);
-router.put('/tasks/:id/assign', checkTaskPermission, blockGuests, assignTask);
-router.put('/tasks/:id/status', checkTaskPermission, blockGuests, updateTaskStatus);
+router.put('/tasks/:id', checkTaskPermission, blockGuests, checkTaskOwnership, updateTask);
+router.delete('/tasks/:id', checkTaskPermission, blockGuests, checkTaskOwnership, deleteTask);
+router.put('/tasks/:id/assign', checkTaskPermission, blockGuests, checkTaskOwnership, assignTask);
+router.put('/tasks/:id/status', checkTaskPermission, blockGuests, checkTaskOwnership, updateTaskStatus);
 
 module.exports = router;
