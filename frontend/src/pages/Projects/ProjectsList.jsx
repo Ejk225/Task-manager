@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar';
 import ProjectCard from '../../components/ProjectCard';
+import Icon from '../../components/Icon';
 import projectService from '../../services/projectService';
 import { exportProjectsToPDF } from '../../services/pdfExportService';
 import '../../styles/ProjectsList.css';
@@ -58,13 +59,13 @@ const ProjectsList = () => {
             className="btn-create-project"
             onClick={() => navigate('/projects/new')}
           >
-            ➕ Nouveau Projet
+            <Icon name="plus" size={16} /> Nouveau Projet
           </button>
-          <button 
+          <button
             className="btn-export-pdf"
             onClick={() => exportProjectsToPDF(projects)}
           >
-            📄 Exporter en PDF
+            <Icon name="download" size={15} /> Exporter en PDF
           </button>
         </div>
 
@@ -82,7 +83,7 @@ const ProjectsList = () => {
               className="btn-create-project"
               onClick={() => navigate('/projects/new')}
             >
-              ➕ Créer un projet
+<Icon name="plus" size={16} /> Créer un projet
             </button>
           </div>
         ) : (

@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import Icon from './Icon';
 import '../styles/ProjectCard.css';
 
 const ProjectCard = ({ project, onDelete }) => {
@@ -38,10 +39,10 @@ const ProjectCard = ({ project, onDelete }) => {
       <div className="project-meta">
         <div className="project-info">
           <span className="info-item">
-            👥 {project.nombre_membres || 0} membre{(project.nombre_membres || 0) > 1 ? 's' : ''}
+            <Icon name="users" size={14} /> {project.nombre_membres || 0} membre{(project.nombre_membres || 0) > 1 ? 's' : ''}
           </span>
           <span className="info-item">
-            📅 {formatDate(project.date_creation)}
+            <Icon name="calendar" size={14} /> {formatDate(project.date_creation)}
           </span>
         </div>
 
@@ -58,13 +59,13 @@ const ProjectCard = ({ project, onDelete }) => {
             className="btn-edit"
             onClick={() => navigate(`/projects/${project.id_projet}/edit`)}
           >
-            ✏️ Modifier
+            <Icon name="edit" size={14} /> Modifier
           </button>
-          <button 
+          <button
             className="btn-delete"
             onClick={handleDelete}
           >
-            🗑️ Supprimer
+            <Icon name="trash" size={14} /> Supprimer
           </button>
         </div>
       )}

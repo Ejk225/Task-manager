@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import Icon from './Icon';
 import '../styles/Navbar.css';
 
 const Navbar = () => {
@@ -15,7 +16,8 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="navbar-container">
         <div className="navbar-brand" onClick={() => navigate('/projects')}>
-          <h1>📋 Task Manager</h1>
+          <Icon name="clipboard" size={22} />
+          <h1>Task Manager</h1>
         </div>
 
         <div className="navbar-menu">
@@ -28,7 +30,7 @@ const Navbar = () => {
         </div>
 
         <div className="navbar-user">
-          <span className="user-name">👤 {user?.nom}</span>
+          <span className="user-name"><Icon name="user" size={15} />{user?.nom}</span>
           <button onClick={handleLogout} className="btn-logout-nav">
             Déconnexion
           </button>

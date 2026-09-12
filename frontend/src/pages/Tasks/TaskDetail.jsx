@@ -9,6 +9,7 @@ import AttachmentsList from '../../components/Attachments/AttachmentsList';
 import CommentsList from '../../components/Comments/CommentsList';
 import TaskHistoryComponent from '../../components/History/TaskHistory';
 import useProjectRole from '../../hooks/useProjectRole';
+import Icon from '../../components/Icon';
 import '../../styles/TaskDetail.css';
 import '../../styles/Attachments.css';
 import '../../styles/Comments.css';
@@ -119,7 +120,7 @@ const TaskDetail = () => {
           className="btn-back"
           onClick={() => navigate(`/projects/${projectId}/tasks`)}
         >
-          ← Retour aux tâches
+          <Icon name="arrowLeft" size={15} /> Retour aux tâches
         </button>
 
         <div className="task-detail-header">
@@ -138,12 +139,12 @@ const TaskDetail = () => {
                 className="btn-edit"
                 onClick={() => navigate(`/projects/${projectId}/tasks/${taskId}/edit`)}
               >
-                ✏️ Modifier
+                <Icon name="edit" size={14} /> Modifier
               </button>
             )}
             {!isGuest && (
               <button className="btn-delete" onClick={handleDelete}>
-                🗑️ Supprimer
+                <Icon name="trash" size={14} /> Supprimer
               </button>
             )}
           </div>
@@ -161,21 +162,21 @@ const TaskDetail = () => {
             <h2>Détails</h2>
             <div className="details-grid">
               <div className="detail-item">
-                <span className="detail-label">📅 Échéance :</span>
+                <span className="detail-label"><Icon name="calendar" size={13} /> Échéance :</span>
                 <span className="detail-value">{formatDate(task.date_echeance)}</span>
               </div>
               <div className="detail-item">
-                <span className="detail-label">📆 Créée le :</span>
+                <span className="detail-label"><Icon name="calendarPlus" size={13} /> Créée le :</span>
                 <span className="detail-value">{formatDateTime(task.date_creation)}</span>
               </div>
               <div className="detail-item">
-                <span className="detail-label">👤 Assignée à :</span>
+                <span className="detail-label"><Icon name="user" size={13} /> Assignée à :</span>
                 <span className="detail-value">
                   {task.utilisateur_assigne?.nom || 'Non assignée'}
                 </span>
               </div>
               <div className="detail-item">
-                <span className="detail-label">📁 Projet :</span>
+                <span className="detail-label"><Icon name="folder" size={13} /> Projet :</span>
                 <span className="detail-value">{task.projet?.nom}</span>
               </div>
             </div>

@@ -1,17 +1,18 @@
-.welcome-card {
-  max-width: 700px;
-  margin: 0 auto 2rem;   /* nouvelle ligne */
-  background: white;
-  border-radius: 16px;
-  padding: 2.5rem;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+.dashboard-main {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
 }
 
 .welcome-card {
-  background: white;
-  border-radius: 16px;
+  max-width: 700px;
+  margin: 0 auto 2rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
   padding: 2.5rem;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  box-shadow: var(--shadow-sm);
 }
 
 .welcome-header {
@@ -19,24 +20,25 @@
 }
 
 .welcome-header h2 {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #2c3e50;
+  font-size: 1.9rem;
+  font-weight: 600;
+  color: var(--color-ink);
   margin: 0 0 0.3rem;
 }
 
 .welcome-date {
-  color: #888;
+  color: var(--color-ink-faint);
   font-size: 0.9rem;
   text-transform: capitalize;
   margin: 0;
 }
 
 .welcome-citation {
+  font-family: var(--font-serif);
   font-style: italic;
-  color: #667eea;
-  font-size: 1rem;
-  border-left: 3px solid #667eea;
+  color: var(--color-accent);
+  font-size: 1.1rem;
+  border-left: 3px solid var(--color-accent);
   padding-left: 1rem;
   margin: 1.5rem 0;
   line-height: 1.6;
@@ -50,28 +52,33 @@
 }
 
 .btn-go-projects {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  background: #667eea;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-weight: 700;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
-  transition: background 0.2s, transform 0.15s;
+  transition: background 0.2s;
 }
 
 .btn-go-projects:hover {
-  background: #5a6fd6;
-  transform: translateY(-2px);
+  background: var(--color-accent-dark);
 }
 
 .btn-new-project {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  background: white;
-  color: #667eea;
-  border: 2px solid #667eea;
-  border-radius: 10px;
+  background: var(--color-surface);
+  color: var(--color-accent);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-sm);
   font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
@@ -79,35 +86,36 @@
 }
 
 .btn-new-project:hover {
-  background: #f0f2ff;
+  background: var(--color-accent-soft);
 }
 
 .user-details {
-  background: #f8f9ff;
-  border-radius: 10px;
+  background: var(--color-surface-alt);
+  border-radius: var(--radius-md);
   padding: 1.25rem;
-  border-left: 4px solid #667eea;
+  border-left: 3px solid var(--color-accent);
 }
 
 .user-details h3 {
   font-size: 1rem;
-  color: #2c3e50;
+  font-family: var(--font-sans);
+  color: var(--color-ink);
   margin: 0 0 0.75rem;
 }
 
 .user-details p {
   margin: 0.4rem 0;
   font-size: 0.95rem;
-  color: #444;
+  color: var(--color-ink-soft);
 }
 
-/* ===== Ajouts : section statistiques du Dashboard (disposition bento) ===== */
+/* ===== Section statistiques du Dashboard (disposition bento) ===== */
 
 .stats-loading,
 .stats-error {
   text-align: center;
   padding: 2rem;
-  color: #666;
+  color: var(--color-ink-soft);
 }
 
 /* Grille asymétrique principale */
@@ -135,10 +143,11 @@
 }
 
 .bento-card {
-  background: white;
-  border-radius: 14px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
   padding: 1.1rem 1.25rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
   /* Fix crucial : empêche la grille de réduire la cellule au-delà du contenu,
@@ -152,9 +161,12 @@
 
 .bento-card h3 {
   margin: 0 0 0.5rem 0;
-  font-size: 0.95rem;
-  color: #333;
+  font-size: 0.9rem;
+  font-family: var(--font-sans);
+  color: var(--color-ink-soft);
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
   flex-shrink: 0;
 }
 
@@ -188,11 +200,12 @@
 
 /* Cartes KPI empilées, chacune avec un liseré de couleur distinct */
 .kpi-card {
-  background: white;
-  border-radius: 14px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
   padding: 1rem 1.1rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
-  border-left: 4px solid #ccc;
+  box-shadow: var(--shadow-sm);
+  border-left: 3px solid var(--color-border-strong);
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
@@ -203,24 +216,25 @@
 }
 
 .kpi-value {
+  font-family: var(--font-serif);
   font-size: 1.9rem;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1;
-  color: #1F3B57;
+  color: var(--color-ink);
 }
 
 .kpi-label {
   font-size: 0.8rem;
-  color: #777;
+  color: var(--color-ink-faint);
 }
 
-.kpi-navy { border-left-color: #1F3B57; }
-.kpi-blue { border-left-color: #3498db; }
-.kpi-success { border-left-color: #2ecc71; }
-.kpi-success .kpi-value { color: #2ecc71; }
-.kpi-neutral { border-left-color: #bbb; }
-.kpi-danger { border-left-color: #e74c3c; }
-.kpi-danger .kpi-value { color: #e74c3c; }
+.kpi-navy { border-left-color: var(--color-ink); }
+.kpi-blue { border-left-color: var(--color-status-progress); }
+.kpi-success { border-left-color: var(--color-success); }
+.kpi-success .kpi-value { color: var(--color-success); }
+.kpi-neutral { border-left-color: var(--color-border-strong); }
+.kpi-danger { border-left-color: var(--color-danger); }
+.kpi-danger .kpi-value { color: var(--color-danger); }
 
 /* Mini légende sous le donut */
 .mini-legend {
@@ -237,7 +251,7 @@
   align-items: center;
   gap: 0.35rem;
   font-size: 0.75rem;
-  color: #666;
+  color: var(--color-ink-soft);
 }
 
 .legend-dot {
@@ -263,7 +277,7 @@
   align-items: flex-start;
   gap: 0.6rem;
   padding: 0.55rem 0;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--color-border);
   cursor: pointer;
 }
 
@@ -272,7 +286,7 @@
 }
 
 .recent-task-item:hover {
-  background: #fafafa;
+  background: var(--color-surface-alt);
 }
 
 .status-dot {
@@ -283,10 +297,10 @@
   margin-top: 0.3rem;
 }
 
-.status-dot.status-a_faire { background-color: #95a5a6; }
-.status-dot.status-en_cours { background-color: #3498db; }
-.status-dot.status-terminee { background-color: #2ecc71; }
-.status-dot.status-archivee { background-color: #7f8c8d; }
+.status-dot.status-a_faire { background-color: var(--color-status-todo); }
+.status-dot.status-en_cours { background-color: var(--color-status-progress); }
+.status-dot.status-terminee { background-color: var(--color-status-done); }
+.status-dot.status-archivee { background-color: var(--color-status-archived); }
 
 .recent-task-text {
   display: flex;
@@ -296,7 +310,7 @@
 
 .recent-task-title {
   font-size: 0.85rem;
-  color: #333;
+  color: var(--color-ink);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -304,7 +318,7 @@
 
 .recent-task-project {
   font-size: 0.72rem;
-  color: #999;
+  color: var(--color-ink-faint);
 }
 
 /* Responsive : la grille bento se replie en une seule colonne */

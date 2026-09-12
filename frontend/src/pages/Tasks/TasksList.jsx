@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Navbar from '../../components/Navbar';
 import TaskCard from '../../components/TaskCard';
+import Icon from '../../components/Icon';
 import taskService from '../../services/taskService';
 import projectService from '../../services/projectService';
 import { exportTasksToPDF } from '../../services/pdfExportService';
@@ -118,19 +119,19 @@ const TasksList = () => {
           className="btn-back" 
           onClick={() => navigate(`/projects/${projectId}`)}
         >
-          ← Retour au projet
+          <Icon name="arrowLeft" size={15} /> Retour au projet
         </button>
 
         <div className="tasks-header">
           <div>
             <h1>Tâches - {project?.nom}</h1>
             <div className="tasks-stats">
-              <span className="stat-item">📊 {stats.total} tâches</span>
-              <span className="stat-item">⭕ {stats.a_faire} à faire</span>
-              <span className="stat-item">🔵 {stats.en_cours} en cours</span>
-              <span className="stat-item">✅ {stats.terminee} terminées</span>
+              <span className="stat-item"><Icon name="barChart" size={14} /> {stats.total} tâches</span>
+              <span className="stat-item">{stats.a_faire} à faire</span>
+              <span className="stat-item">{stats.en_cours} en cours</span>
+              <span className="stat-item"><Icon name="checkCircle" size={14} /> {stats.terminee} terminées</span>
               {stats.en_retard > 0 && (
-                <span className="stat-item stat-overdue">⚠️ {stats.en_retard} en retard</span>
+                <span className="stat-item stat-overdue"><Icon name="alertTriangle" size={14} /> {stats.en_retard} en retard</span>
               )}
             </div>
           </div>
@@ -139,14 +140,14 @@ const TasksList = () => {
               className="btn-create-task"
               onClick={() => navigate(`/projects/${projectId}/tasks/new`)}
             >
-              ➕ Nouvelle Tâche
+              <Icon name="plus" size={16} /> Nouvelle Tâche
             </button>
           )}
           <button
             className="btn-export-pdf"
             onClick={() => exportTasksToPDF(project?.nom || 'projet', tasks, filters)}
           >
-            📥 Exporter les tâches
+            <Icon name="download" size={15} /> Exporter les tâches
           </button>
         </div>
 
@@ -206,7 +207,7 @@ const TasksList = () => {
 
           {(filters.statut || filters.priorite || filters.assignee || filters.search) && (
             <button className="btn-clear-filters" onClick={clearFilters}>
-              ✕ Effacer
+              <Icon name="x" size={13} /> Effacer
             </button>
           )}
         </div>
@@ -220,7 +221,7 @@ const TasksList = () => {
               className="btn-create-task"
               onClick={() => navigate(`/projects/${projectId}/tasks/new`)}
             >
-              ➕ Créer une tâche
+<Icon name="plus" size={16} /> Créer une tâche
             </button>
           </div>
         ) : (

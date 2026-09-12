@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Icon from '../Icon';
 
 const timeAgo = (dateStr) => {
   const diff = Math.floor((Date.now() - new Date(dateStr)) / 1000);
@@ -64,7 +65,7 @@ const CommentItem = ({ comment, currentUserId, onUpdate, onDelete }) => {
                 onClick={handleUpdate}
                 disabled={loading || !editContent.trim()}
               >
-                {loading ? 'Sauvegarde...' : '✅ Sauvegarder'}
+                {loading ? 'Sauvegarde...' : <><Icon name="check" size={13} /> Sauvegarder</>}
               </button>
               <button
                 className="btn-comment btn-comment--cancel"
@@ -86,13 +87,13 @@ const CommentItem = ({ comment, currentUserId, onUpdate, onDelete }) => {
               className="btn-comment btn-comment--edit"
               onClick={() => setEditing(true)}
             >
-              ✏️ Modifier
+              <Icon name="edit" size={12} /> Modifier
             </button>
             <button
               className="btn-comment btn-comment--delete"
               onClick={() => onDelete(comment.id_commentaire)}
             >
-              🗑️ Supprimer
+              <Icon name="trash" size={12} /> Supprimer
             </button>
           </div>
         )}

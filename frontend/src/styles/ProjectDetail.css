@@ -4,18 +4,19 @@
   margin: 0 auto;
   padding: 2rem;
   min-height: calc(100vh - 80px);
-  background-color: #f5f5f5;
+  background-color: var(--color-bg);
 }
 
 .btn-back {
-  background: #f0f0f0;
-  border: none;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  color: var(--color-ink);
   padding: 0.6rem 1.2rem;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   font-size: 0.95rem;
   margin-bottom: 1.5rem;
-  transition: background 0.2s, transform 0.1s;
+  transition: background 0.2s;
   min-height: 40px;
   display: inline-flex;
   align-items: center;
@@ -23,11 +24,7 @@
 }
 
 .btn-back:hover {
-  background: #e0e0e0;
-}
-
-.btn-back:active {
-  transform: scale(0.98);
+  background: var(--color-surface-alt);
 }
 
 .project-detail-header {
@@ -46,9 +43,9 @@
 
 .project-detail-header h1 {
   margin: 0 0 0.5rem 0;
-  color: #333;
-  font-size: 2.5rem;
-  font-weight: 700;
+  color: var(--color-ink);
+  font-size: 2.3rem;
+  font-weight: 600;
   word-break: break-word;
 }
 
@@ -67,23 +64,24 @@
 
 .project-info-section,
 .members-section {
-  background: white;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
   width: 100%;
 }
 
 .project-info-section h2,
 .members-section h2 {
   margin: 0 0 1rem 0;
-  color: #333;
-  font-size: 1.5rem;
+  color: var(--color-ink);
+  font-size: 1.4rem;
   font-weight: 600;
 }
 
 .project-info-section p {
-  color: #666;
+  color: var(--color-ink-soft);
   line-height: 1.6;
   margin: 0;
   font-size: 1rem;
@@ -99,25 +97,24 @@
 }
 
 .btn-add-member {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  border: 1px solid var(--color-accent);
   padding: 0.7rem 1.2rem;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   font-size: 0.9rem;
   font-weight: 600;
-  transition: transform 0.2s;
+  transition: background 0.2s;
   white-space: nowrap;
   min-height: 44px;
 }
 
 .btn-add-member:hover {
-  transform: translateY(-2px);
-}
-
-.btn-add-member:active {
-  transform: translateY(0);
+  background: var(--color-accent-dark);
 }
 
 .add-member-form {
@@ -125,8 +122,8 @@
   gap: 0.75rem;
   margin-bottom: 1.5rem;
   padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 8px;
+  background: var(--color-surface-alt);
+  border-radius: var(--radius-md);
   flex-wrap: wrap;
 }
 
@@ -134,14 +131,16 @@
   flex: 1;
   min-width: 200px;
   padding: 0.7rem;
-  border: 2px solid #e0e0e0;
-  border-radius: 6px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
   font-size: 0.95rem;
+  background: var(--color-surface);
+  color: var(--color-ink);
 }
 
 .add-member-form input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--color-accent);
 }
 
 .add-member-form button {
@@ -160,14 +159,14 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 8px;
+  background: var(--color-surface-alt);
+  border-radius: var(--radius-md);
   transition: background 0.2s;
   gap: 1rem;
 }
 
 .member-card:hover {
-  background: #f0f0f0;
+  background: var(--color-border);
 }
 
 .member-info {
@@ -185,7 +184,7 @@
 
 .member-info h4 {
   margin: 0 0 0.25rem 0;
-  color: #333;
+  color: var(--color-ink);
   font-size: 1rem;
   font-weight: 600;
   overflow: hidden;
@@ -195,7 +194,7 @@
 
 .member-info p {
   margin: 0;
-  color: #666;
+  color: var(--color-ink-soft);
   font-size: 0.9rem;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -204,39 +203,35 @@
 
 .role-badge {
   padding: 0.3rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.75rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.72rem;
   font-weight: 600;
   white-space: nowrap;
   flex-shrink: 0;
 }
 
 .role-badge.owner {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
 }
 
 .btn-remove {
-  background: #fee;
-  color: #c33;
-  border: none;
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+  border: 1px solid transparent;
   padding: 0.6rem 1rem;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   font-size: 0.9rem;
   font-weight: 500;
-  transition: background 0.2s, transform 0.1s;
+  transition: border-color 0.2s;
   white-space: nowrap;
   min-height: 40px;
   flex-shrink: 0;
 }
 
 .btn-remove:hover {
-  background: #fdd;
-}
-
-.btn-remove:active {
-  transform: scale(0.98);
+  border-color: var(--color-danger);
 }
 
 .loading,
@@ -244,6 +239,7 @@
   text-align: center;
   padding: 2rem;
   font-size: 1rem;
+  color: var(--color-ink-soft);
 }
 
 /* ============================================ */

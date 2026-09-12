@@ -4,22 +4,23 @@
   margin: 0 auto;
   padding: 2rem;
   min-height: calc(100vh - 80px);
-  background-color: #f5f5f5;
+  background-color: var(--color-bg);
 }
 
 .project-form-card {
-  background: white;
-  border-radius: 12px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
   padding: 2rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-sm);
   width: 100%;
 }
 
 .project-form-card h1 {
   margin: 0 0 2rem 0;
-  color: #333;
-  font-size: 2rem;
-  font-weight: 700;
+  color: var(--color-ink);
+  font-size: 1.9rem;
+  font-weight: 600;
 }
 
 .project-form {
@@ -37,7 +38,7 @@
 }
 
 .form-group label {
-  color: #333;
+  color: var(--color-ink);
   font-weight: 500;
   font-size: 0.95rem;
 }
@@ -46,18 +47,20 @@
 .form-group textarea {
   width: 100%;
   padding: 0.875rem;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
   font-size: 1rem;
   font-family: inherit;
-  transition: border-color 0.3s;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-soft);
 }
 
 .form-group textarea {
@@ -73,46 +76,37 @@
 }
 
 .btn-cancel {
-  background: #f0f0f0;
-  color: #333;
-  border: none;
+  background: var(--color-surface-alt);
+  color: var(--color-ink);
+  border: 1px solid var(--color-border-strong);
   padding: 0.875rem 1.5rem;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   font-size: 1rem;
   font-weight: 500;
-  transition: background 0.2s, transform 0.1s;
+  transition: background 0.2s;
   min-height: 44px;
 }
 
 .btn-cancel:hover {
-  background: #e0e0e0;
-}
-
-.btn-cancel:active {
-  transform: scale(0.98);
+  background: var(--color-border);
 }
 
 .btn-submit {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  border: 1px solid var(--color-accent);
   padding: 0.875rem 1.5rem;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   font-size: 1rem;
   font-weight: 600;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: background 0.2s;
   min-height: 44px;
 }
 
 .btn-submit:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
-}
-
-.btn-submit:active:not(:disabled) {
-  transform: translateY(0);
+  background: var(--color-accent-dark);
 }
 
 .btn-submit:disabled {
@@ -121,11 +115,11 @@
 }
 
 .error-message {
-  background-color: #fee;
-  color: #c33;
+  background-color: var(--color-danger-soft);
+  color: var(--color-danger);
   padding: 1rem;
-  border-radius: 8px;
-  border-left: 4px solid #c33;
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--color-danger);
   margin-bottom: 1.5rem;
   font-size: 0.95rem;
 }
@@ -143,7 +137,7 @@
   }
 
   .project-form-card h1 {
-    font-size: 1.75rem;
+    font-size: 1.65rem;
   }
 }
 
@@ -158,11 +152,11 @@
 
   .project-form-card {
     padding: 1.5rem;
-    border-radius: 10px;
+    border-radius: var(--radius-md);
   }
 
   .project-form-card h1 {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     margin-bottom: 1.5rem;
   }
 
@@ -207,7 +201,7 @@
   }
 
   .project-form-card h1 {
-    font-size: 1.35rem;
+    font-size: 1.3rem;
   }
 
   .form-group input,

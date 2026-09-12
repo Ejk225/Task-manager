@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Icon from '../Icon';
 
 const CommentForm = ({ onSubmit, loading }) => {
   const [contenu, setContenu] = useState('');
@@ -26,7 +27,7 @@ const CommentForm = ({ onSubmit, loading }) => {
           onClick={handleSubmit}
           disabled={loading || !contenu.trim()}
         >
-          {loading ? 'Envoi...' : '📤 Envoyer'}
+          {loading ? 'Envoi...' : <><Icon name="upload" size={13} /> Envoyer</>}
         </button>
       </div>
     </div>

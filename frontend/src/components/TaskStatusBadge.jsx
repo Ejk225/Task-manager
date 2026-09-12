@@ -1,3 +1,4 @@
+import Icon from './Icon';
 import '../styles/TaskStatusBadge.css';
 
 const TaskStatusBadge = ({ statut, priorite, isOverdue }) => {
@@ -35,7 +36,7 @@ const TaskStatusBadge = ({ statut, priorite, isOverdue }) => {
       )}
       {isOverdue && (
         <span className="overdue-badge">
-          ⚠️ En retard
+          <Icon name="alertTriangle" size={12} /> En retard
         </span>
       )}
     </div>

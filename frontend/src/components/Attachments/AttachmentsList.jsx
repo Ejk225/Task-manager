@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import attachmentService from '../../services/attachmentService';
+import Icon from '../Icon';
 import '../../styles/Attachments.css';
 
 const formatSize = (bytes) => {
@@ -10,12 +11,8 @@ const formatSize = (bytes) => {
 };
 
 const getFileIcon = (mimeType) => {
-  if (mimeType.startsWith('image/')) return '🖼️';
-  if (mimeType === 'application/pdf') return '📄';
-  if (mimeType.includes('word')) return '📝';
-  if (mimeType.includes('excel') || mimeType.includes('spreadsheet')) return '📊';
-  if (mimeType === 'text/plain' || mimeType === 'text/csv') return '📃';
-  return '📎';
+  if (mimeType.startsWith('image/')) return 'image';
+  return 'fileText';
 };
 
 const timeAgo = (dateStr) => {
@@ -115,14 +112,14 @@ const AttachmentsList = ({ taskId }) => {
   return (
     <section className="attachments-section">
       <h2 className="attachments-title">
-        📎 Pièces jointes
+        <Icon name="paperclip" size={16} /> Pièces jointes
         <span className="attachments-count">{attachments.length}</span>
       </h2>
 
       {error && (
         <div className="attachments-error">
           {error}
-          <button onClick={() => setError('')}>✕</button>
+          <button onClick={() => setError('')}><Icon name="x" size={13} /></button>
         </div>
       )}
 
@@ -149,7 +146,7 @@ const AttachmentsList = ({ taskId }) => {
           </div>
         ) : (
           <>
-            <span className="drop-zone__icon">📁</span>
+            <span className="drop-zone__icon"><Icon name="folder" size={26} strokeWidth={1.5} /></span>
             <span className="drop-zone__text">
               Glissez vos fichiers ici ou <strong>cliquez pour parcourir</strong>
             </span>
@@ -170,7 +167,7 @@ const AttachmentsList = ({ taskId }) => {
           {attachments.map(attachment => (
             <div key={attachment.id_piece_jointe} className="attachment-item">
               <span className="attachment-item__icon">
-                {getFileIcon(attachment.type_mime)}
+                <Icon name={getFileIcon(attachment.type_mime)} size={20} strokeWidth={1.5} />
               </span>
               <div className="attachment-item__info">
                 <span className="attachment-item__name">{attachment.nom_original}</span>
@@ -184,7 +181,7 @@ const AttachmentsList = ({ taskId }) => {
                   onClick={() => handleDownload(attachment)}
                   title="Télécharger"
                 >
-                  ⬇️
+                  <Icon name="download" size={16} />
                 </button>
                 {attachment.id_utilisateur === user?.id_utilisateur && (
                   <button
@@ -192,7 +189,7 @@ const AttachmentsList = ({ taskId }) => {
                     onClick={() => handleDelete(attachment.id_piece_jointe)}
                     title="Supprimer"
                   >
-                    🗑️
+                    <Icon name="trash" size={16} />
                   </button>
                 )}
               </div>
